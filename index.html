@@ -801,6 +801,39 @@ body.kdt-authenticated #loginScreen {
     gap: 18px;
   }
 }
+  
+.auth-link {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: #24583d;
+  font: inherit;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#loginForm[hidden],
+#registerForm[hidden] {
+  display: none !important;
+}
+
+#registerForm > label,
+#loginForm > label {
+  display: block;
+  margin: 15px 0 7px;
+  color: #334839;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+#registerForm input,
+#registerForm select,
+#loginForm input {
+  width: 100%;
+  min-height: 44px;
+}
+
 
 </style>
 
@@ -827,14 +860,83 @@ body.kdt-authenticated #loginScreen {
       </p>
     </div>
 
-    <form id="loginForm">
-      <label for="loginName">Your name</label>
-      <input
-        type="text"
-        id="loginName"
-        placeholder="Enter your name"
-        required
-      />
+    
+<div class="login-heading">
+  <span class="eyebrow">KHET DATA TRUST</span>
+  <h2 id="authTitle">Welcome back.</h2>
+  <p id="authDescription">Sign in to access your agricultural data community.</p>
+</div>
+
+<div id="loginMessage" class="note" hidden role="status"></div>
+
+<form id="loginForm">
+  <label for="loginEmail">Email address</label>
+  <input id="loginEmail" type="email" autocomplete="email"
+         placeholder="you@example.com" required />
+
+  <label for="loginPhone">Phone number</label>
+  <input id="loginPhone" type="tel" autocomplete="tel"
+         placeholder="+91 98765 43210" required />
+
+  <label for="loginPassword">Password</label>
+  <input id="loginPassword" type="password"
+         autocomplete="current-password"
+         placeholder="Enter your password" required minlength="8" />
+
+  <button type="submit" class="login-button">
+    Sign in <span>→</span>
+  </button>
+
+  <p class="login-note">
+    New to Khet Data Trust?
+    <button type="button" class="auth-link" id="showRegister">
+      Register first
+    </button>
+  </p>
+</form>
+
+<form id="registerForm" hidden>
+  <label for="regName">Full name</label>
+  <input id="regName" autocomplete="name"
+         placeholder="Enter your full name" required />
+
+  <label for="regEmail">Email address</label>
+  <input id="regEmail" type="email" autocomplete="email"
+         placeholder="you@example.com" required />
+
+  <label for="regPhone">Phone number</label>
+  <input id="regPhone" type="tel" autocomplete="tel"
+         placeholder="+91 98765 43210" required />
+
+  <label for="regPassword">Create password</label>
+  <input id="regPassword" type="password"
+         autocomplete="new-password"
+         minlength="8" placeholder="At least 8 characters" required />
+
+  <label for="regPassword2">Confirm password</label>
+  <input id="regPassword2" type="password"
+         autocomplete="new-password"
+         minlength="8" placeholder="Enter password again" required />
+
+  <label for="regRole">Register as</label>
+  <select id="regRole" required>
+    <option value="farmer">Farmer</option>
+    <option value="requester">Data Requester</option>
+    <option value="admin">FPO Administrator — requires authorization</option>
+  </select>
+
+  <button type="submit" class="login-button">
+    Create account <span>→</span>
+  </button>
+
+  <p class="login-note">
+    Already registered?
+    <button type="button" class="auth-link" id="showLogin">
+      Sign in
+    </button>
+  </p>
+</form>
+
 
       <label class="role-label">Continue as</label>
 
@@ -945,7 +1047,81 @@ else if(a=='vote'){const v=+d.p,p=S.policies.find(x=>x.v==v);if(p.status!='propo
 else if(a=='dup')act('vote',{p:d.p,c:'for'});
 else if(a=='simvotes'){if(need())return;const v=+d.p,r=rng(v*7+Object.keys(S.votes[v]).length);let n=0;for(let i=1;i<=N&&n<12;i++)if(!S.votes[v][i]&&i!=S.farmer){const x=r();S.votes[v][i]=x<.7?'for':x<.9?'against':'abstain';n++}log('Members','simulated votes',null,null,'Recorded',v,n+' demo votes added');evalP(S.policies.find(x=>x.v==v));toast(n+' simulated member votes added.')}
 else if(a=='close'){if(need())return;const p=S.policies.find(x=>x.v==+d.p);if(p.status=='proposed'){p.status='rejected';log('FPO Admin','votes closed',null,null,'Not approved',p.v,'Threshold or quorum not met')}}
-else if(a=='propose'){if(need())return;const el=id=>document.getElementById(id),pu=PUR.filter((x,i)=>i<3&&el('pp'+i).checked);const t=el('pt').value.trim();if(!t||!pu.length)return toast('Add a title and choose at least one purpose.');const v=S.policies.length+1,p={v,title:t,status:'proposed',purposes:pu,k:Math.max(3,+el('pk').value||10),maxDays:Math.min(365,+el('pd').value||45),thr:Math.min(1,Math.max(.5,+el('ph').value/100||.66)),quorum:.5,at:S.now};S.policies.push(p);S.votes[v]={};log('FPO Admin','policy proposed',null,null,'Open for voting',v,t);toast('Proposal published for member voting.')}
+
+else if (a === 'propose') {
+  const el = id => document.getElementById(id);
+  const title = el('pt').value.trim();
+  const purposes = PUR.filter((x, i) =>
+    i < 3 && el('pp' + i).checked
+  );
+
+  if (!title || !purposes.length) {
+    return toast('Add a title and choose at least one purpose.');
+  }
+
+  const v = S.policies.reduce((max, p) => Math.max(max, p.v), 0) + 1;
+
+  const proposal = {
+    v,
+    title,
+    status: 'pending_admin',
+    submittedBy: window.kdtCurrentUser?.name || 'Demo User',
+    submittedRole: S.role,
+    purposes,
+    k: Math.max(3, +el('pk').value || 10),
+    maxDays: Math.min(365, +el('pd').value || 45),
+    thr: Math.min(1, Math.max(0.5, +el('ph').value / 100 || 0.66)),
+    quorum: 0.5,
+    at: S.now
+  };
+
+  S.policies.push(proposal);
+  S.votes[v] = {};
+
+  log(
+    window.kdtCurrentUser?.name || 'Demo User',
+    'proposal submitted for admin review',
+    null, null, 'Pending Admin Review', v, title
+  );
+
+  toast('Proposal submitted. It must be reviewed before voting.');
+}
+else if (a === 'reviewProposal') {
+  if (S.role !== 'admin') {
+    return toast('Only an authorized FPO administrator may review proposals.');
+  }
+
+  const p = S.policies.find(x => x.v === +d.p);
+  if (!p || p.status !== 'pending_admin') {
+    return toast('This proposal is no longer awaiting review.');
+  }
+
+  if (d.decision === 'approve') {
+    p.status = 'proposed';
+    p.reviewedBy = window.kdtCurrentUser?.name || 'FPO Admin';
+    p.reviewedAt = S.now;
+
+    log(
+      p.reviewedBy, 'proposal approved for voting',
+      null, null, 'Open for Voting', p.v, p.title
+    );
+
+    toast('Administrator review passed. The proposal is now open for voting.');
+  } else {
+    p.status = 'rejected';
+    p.reviewedBy = window.kdtCurrentUser?.name || 'FPO Admin';
+    p.reviewedAt = S.now;
+    p.reviewReason = 'Rejected during administrator review.';
+
+    log(
+      p.reviewedBy, 'proposal rejected at admin review',
+      null, null, 'Rejected', p.v, p.title
+    );
+
+    toast('Proposal rejected before voting.');
+  }
+}
+
 else if(a=='submit'){const el=id=>document.getElementById(id).value.trim(),out=el('ro'),days=+el('rd'),c=el('rc');if(!c.includes('@')||!(days>0)||days>365)return toast('Enter a valid contact email and a duration of 1 to 365 days.');const r={id:'R-'+(101+S.requests.length),org:S.org,purpose:el('rp'),ds:OUT[out][1],out,days,contact:c,status:'Pending',at:S.now,reason:'',rel:0};S.requests.push(r);log(S.org,'request submitted',r.ds,r.purpose,'Pending',act_().v,r.id);toast('Request '+r.id+' submitted.')}
 else if(a=='approve'||a=='reject'){if(need())return;const r=S.requests.find(x=>x.id==d.id),p=act_();let why='';if(a=='approve'){if(!p.purposes.includes(r.purpose))why=`Purpose "${r.purpose}" is not permitted by active policy v${p.v}. Members have not approved it.`;else if(r.days>p.maxDays)why=`Duration ${r.days} days exceeds the policy maximum of ${p.maxDays}.`}
 if(a=='approve'&&!why){r.status='Approved';r.apv=p.v;r.exp=S.now+r.days*D;r.reason=`Matched policy v${p.v}: "${r.purpose}" permitted, ${r.days} days, group-level output only, minimum group size ${p.k}.`;log('FPO Admin','request approved',r.ds,r.purpose,'Approved',p.v,r.id+' until '+fmt(r.exp));toast('Approved with fixed purpose and expiry.')}
