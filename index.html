@@ -3,43 +3,899 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Khet Data Trust</title>
 <link href="https://fonts.googleapis.com/css2?family=Literata:wght@500;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
-:root{--bg:#f6f1e4;--card:#fffdf7;--ink:#1f2a24;--mut:#55606a;--line:#ddd5bf;--g:#1d3b2a;--g2:#2f5a40;--gold:#9a7316;--goldbg:#f1e3b8;--ok:#1f6b3a;--bad:#9b2c2c;--sl:#3a4752;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#131d17;--card:#1b2a21;--ink:#efe9d8;--mut:#b4bdb5;--line:#34473b;--g:#8fcba3;--g2:#6db589;--gold:#e0b657;--goldbg:#3b3319;--ok:#7fd69b;--bad:#f09a9a;--sl:#b9c4cf}}
-*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--ink);font:15px/1.55 'Public Sans',system-ui,sans-serif}
-h1,h2,h3{font-family:Literata,Georgia,serif;margin:0 0 .5rem;line-height:1.2}h1{font-size:1.9rem}h2{font-size:1.3rem}h3{font-size:1.05rem}
-.demo{background:var(--gold);color:#fff;padding:.35rem 1rem;font-size:.82rem;text-align:center}
-.shell{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
-nav{background:var(--g);padding:1rem .6rem;position:sticky;top:0;align-self:start;height:100vh}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]) nav{background:#0d1511}}
-nav b{display:block;color:#f6f1e4;font:700 1.15rem Literata,serif;padding:.2rem .6rem 1rem}
-nav button{display:block;width:100%;text-align:left;background:none;border:0;color:#dfe8dc;padding:.55rem .7rem;border-radius:6px;font:inherit;cursor:pointer}
-nav button[aria-current=page]{background:#f6f1e4;color:#1d3b2a;font-weight:600}nav button:hover{background:#2f5a40;color:#fff}
-main{padding:1.2rem 1.5rem 3rem;max-width:1100px;width:100%}
-.top{display:flex;gap:.8rem;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-bottom:1rem}
-.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:1rem 1.1rem;margin-bottom:1rem}
-.grid{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.grid .card{margin:0}
-.big{font:700 1.8rem Literata,serif;color:var(--g)}.mut{color:var(--mut);font-size:.88rem}
-button.b,select,input,textarea{font:inherit;border-radius:6px;border:1px solid var(--line);padding:.45rem .7rem;background:var(--card);color:var(--ink)}
-button.b{cursor:pointer;background:var(--g);color:#fff;border-color:var(--g)}@media (prefers-color-scheme:dark){:root:not([data-theme=light]) button.b{color:#0d1511}}
-button.b.o{background:none;color:var(--g)}button.b.d{background:var(--bad);border-color:var(--bad);color:#fff}button.b:disabled{opacity:.45;cursor:not-allowed}
-:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
-table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{text-align:left;padding:.5rem .5rem;border-bottom:1px solid var(--line);vertical-align:top}th{color:var(--mut);font-weight:600}
-.wrap{overflow-x:auto}
-.chip{display:inline-block;padding:.1rem .55rem;border-radius:99px;font-size:.78rem;font-weight:600;background:var(--line);color:var(--ink)}
-.Pending,.proposed{background:var(--goldbg);color:var(--gold)}.Approved,.active{background:#d4ecd9;color:#1f6b3a}.Rejected,.Revoked{background:#f3d3d3;color:#9b2c2c}.Expired,.superseded{background:#dde3e8;color:#3a4752}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .Approved,.active{background:#1f3d2a;color:#7fd69b}.Rejected,.Revoked{background:#4a2323;color:#f09a9a}}
-.bar{background:var(--line);border-radius:4px;height:9px;position:relative;min-width:80px}.bar i{display:block;height:100%;background:var(--g2);border-radius:4px}.bar u{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--gold)}
-.row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center}.f{display:grid;gap:.6rem;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.f label{display:grid;gap:.2rem;font-size:.85rem;color:var(--mut)}
-.tl{border-left:3px solid var(--g2);margin-left:.5rem;padding-left:1rem}.tl div{margin-bottom:.7rem;position:relative}.tl div:before{content:"";position:absolute;left:-1.5rem;top:.35rem;width:10px;height:10px;border-radius:50%;background:var(--gold)}
-.note{border-left:4px solid var(--gold);background:var(--goldbg);padding:.6rem .8rem;border-radius:0 6px 6px 0;font-size:.88rem;margin:.6rem 0;color:var(--ink)}
-.steps{display:grid;gap:.8rem;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin:1rem 0}.steps div{border-top:3px solid var(--gold);padding-top:.5rem}
-.hash{font-family:ui-monospace,monospace;font-size:.75rem}.bad{color:var(--bad);font-weight:600}.ok{color:var(--ok);font-weight:600}
-#toast{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);background:var(--g);color:#fff;padding:.6rem 1rem;border-radius:8px;max-width:90%;z-index:9}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]) #toast{color:#0d1511}}
-@media (max-width:760px){.shell{display:block}nav{position:static;height:auto;display:flex;overflow-x:auto;gap:.2rem;padding:.5rem}nav b{display:none}nav button{white-space:nowrap;width:auto}main{padding:1rem}}
-@media (prefers-reduced-motion:no-preference){.card{animation:in .25s ease}@keyframes in{from{opacity:.4}to{opacity:1}}}
-</style></head><body>
+:root {
+  color-scheme: light;
+  --bg: #f5f7f2;
+  --card: #ffffff;
+  --ink: #202b24;
+  --mut: #707b72;
+  --line: #e4e9e1;
+  --g: #245b40;
+  --g2: #397957;
+  --gold: #a87830;
+  --goldbg: #f8f0df;
+  --ok: #26734a;
+  --bad: #ad4545;
+  --sl: #53645a;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+html, body { margin: 0; min-height: 100%; }
+
+body {
+  background:
+    radial-gradient(ellipse at 85% 0%, rgba(210, 230, 208, .24), transparent 34%),
+    var(--bg);
+  color: var(--ink);
+  font: 14px/1.65 'Public Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 {
+  font-family: 'Literata', Georgia, serif;
+  margin: 0 0 .65rem;
+  line-height: 1.3;
+  letter-spacing: -.025em;
+}
+
+h1 { font-size: clamp(1.65rem, 3vw, 2.15rem); }
+h2 { font-size: 1.45rem; }
+h3 { font-size: 1.06rem; letter-spacing: -.01em; }
+
+p { margin: .55rem 0; }
+a { color: var(--g); }
+
+.demo {
+  background: #203e2e;
+  color: #e5efe4;
+  padding: .45rem 1rem;
+  font-size: .76rem;
+  letter-spacing: .025em;
+  text-align: center;
+  border-bottom: 1px solid rgba(255,255,255,.12);
+}
+
+.shell {
+  display: grid;
+  grid-template-columns: 248px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+/* Sidebar */
+nav {
+  background: linear-gradient(165deg, #1e3d2d 0%, #244b36 52%, #193528 100%);
+  padding: 1.5rem .85rem;
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100vh;
+  overflow-y: auto;
+  border-right: 1px solid rgba(255,255,255,.07);
+}
+
+nav b {
+  display: block;
+  color: #f4f5e9;
+  font: 700 1.22rem 'Literata', Georgia, serif;
+  padding: .45rem .7rem 1.7rem;
+  letter-spacing: -.035em;
+}
+
+nav button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  color: #cbd9cd;
+  padding: .72rem .8rem;
+  margin: .2rem 0;
+  border-radius: 8px;
+  font: 500 .86rem 'Public Sans', system-ui, sans-serif;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease;
+}
+
+nav button:hover {
+  background: rgba(255,255,255,.08);
+  color: #fff;
+}
+
+nav button[aria-current="page"] {
+  background: #f3f6ed;
+  color: #244b36;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+main {
+  padding: 1.6rem clamp(1rem, 3vw, 2.5rem) 3.5rem;
+  max-width: 1440px;
+  width: 100%;
+  min-width: 0;
+  margin: 0 auto;
+}
+
+.top {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.6rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.top > .mut {
+  color: var(--g);
+  font-weight: 600;
+  font-size: .84rem;
+  letter-spacing: .015em;
+}
+
+/* Cards and layout */
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  padding: 1.3rem;
+  margin-bottom: 1.1rem;
+  box-shadow: 0 2px 5px rgba(31, 53, 36, .025);
+  transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.card:hover {
+  border-color: #d4dfd2;
+  box-shadow: 0 5px 18px rgba(31, 53, 36, .045);
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.grid .card { margin: 0; }
+
+.big {
+  font: 700 2rem 'Literata', Georgia, serif;
+  color: var(--g);
+  letter-spacing: -.04em;
+  margin-bottom: .2rem;
+}
+
+.mut {
+  color: var(--mut);
+  font-size: .84rem;
+}
+
+/* Hero section on the Overview page */
+#app > .card:first-of-type:has(.steps) {
+  background:
+    radial-gradient(ellipse at 100% 0%, rgba(185, 216, 183, .25), transparent 45%),
+    linear-gradient(145deg, #ffffff, #fafcf7);
+  border-color: #dce7d9;
+  padding: clamp(1.3rem, 3vw, 2rem);
+}
+
+#app > .card:first-of-type:has(.steps) h1 {
+  max-width: 750px;
+  color: #214d35;
+  margin-bottom: .85rem;
+}
+
+.steps {
+  display: grid;
+  gap: 1.2rem;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  margin: 1.5rem 0;
+}
+
+.steps div {
+  border-top: 2px solid #b5cdb3;
+  padding-top: .75rem;
+}
+
+.steps div b { color: var(--g); }
+
+/* Forms and buttons */
+button.b, select, input, textarea {
+  font: inherit;
+  border-radius: 7px;
+  border: 1px solid #d7e0d5;
+  padding: .57rem .75rem;
+  background: #fff;
+  color: var(--ink);
+}
+
+button.b {
+  cursor: pointer;
+  background: var(--g);
+  color: #fff;
+  border-color: var(--g);
+  font-size: .84rem;
+  font-weight: 600;
+  transition: background .18s ease, transform .18s ease;
+}
+
+button.b:hover:not(:disabled) {
+  background: #19452f;
+  transform: translateY(-1px);
+}
+
+button.b.o {
+  background: #fff;
+  color: var(--g);
+  border-color: #cbdaca;
+}
+
+button.b.o:hover:not(:disabled) {
+  background: #f0f6ee;
+}
+
+button.b.d {
+  background: #a53f3f;
+  border-color: #a53f3f;
+  color: #fff;
+}
+
+button.b:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+button, select, input, textarea { max-width: 100%; }
+select, input, textarea { accent-color: var(--g); }
+input[type="checkbox"], input[type="range"] { accent-color: var(--g); }
+
+:focus-visible {
+  outline: 3px solid #c89b50;
+  outline-offset: 3px;
+}
+
+/* Tables */
+.wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .84rem;
+}
+
+th, td {
+  text-align: left;
+  padding: .8rem .65rem;
+  border-bottom: 1px solid #e9ede7;
+  vertical-align: top;
+}
+
+th {
+  color: #69766c;
+  font-size: .75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .045em;
+  background: #f8faf6;
+}
+
+tbody tr:hover, table tr:hover td {
+  background: #fafcf8;
+}
+
+/* Status indicators */
+.chip {
+  display: inline-block;
+  padding: .2rem .6rem;
+  border-radius: 5px;
+  font-size: .73rem;
+  font-weight: 600;
+  background: #edf0eb;
+  color: #536054;
+  white-space: nowrap;
+}
+
+.Pending, .proposed {
+  background: #fbf1dc;
+  color: #91631d;
+}
+
+.Approved, .active {
+  background: #e2f2e6;
+  color: #276a40;
+}
+
+.Rejected, .Revoked {
+  background: #fae9e7;
+  color: #a23e3e;
+}
+
+.Expired, .superseded {
+  background: #e9edf0;
+  color: #56636c;
+}
+
+.bar {
+  background: #edf1eb;
+  border-radius: 5px;
+  height: 8px;
+  position: relative;
+  min-width: 80px;
+  overflow: visible;
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #548b61, #2d6945);
+  border-radius: 5px;
+}
+
+.bar u {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  width: 2px;
+  background: #b18435;
+}
+
+.row {
+  display: flex;
+  gap: .65rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.f {
+  display: grid;
+  gap: .9rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.f label {
+  display: grid;
+  gap: .35rem;
+  font-size: .82rem;
+  color: var(--mut);
+}
+
+/* Timeline and callouts */
+.tl {
+  border-left: 2px solid #cbdcc9;
+  margin-left: .55rem;
+  padding-left: 1.1rem;
+}
+
+.tl div {
+  margin-bottom: .9rem;
+  position: relative;
+}
+
+.tl div:before {
+  content: "";
+  position: absolute;
+  left: -1.48rem;
+  top: .45rem;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #729775;
+  box-shadow: 0 0 0 3px #edf4eb;
+}
+
+.note {
+  border-left: 3px solid #c39a4d;
+  background: #fbf5e8;
+  padding: .8rem 1rem;
+  border-radius: 0 8px 8px 0;
+  font-size: .85rem;
+  margin: .75rem 0;
+  color: #574a31;
+}
+
+.hash {
+  font-family: ui-monospace, monospace;
+  font-size: .74rem;
+  color: #66756b;
+}
+
+.bad { color: var(--bad); font-weight: 600; }
+.ok { color: var(--ok); font-weight: 600; }
+
+#toast {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #203e2e;
+  color: #fff;
+  padding: .8rem 1.2rem;
+  border-radius: 9px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.16);
+  max-width: 90%;
+  z-index: 9;
+  font-size: .86rem;
+}
+
+/* Responsive layout */
+@media (max-width: 760px) {
+  .shell { display: block; }
+
+  nav {
+    position: sticky;
+    z-index: 5;
+    top: 0;
+    height: auto;
+    display: flex;
+    overflow-x: auto;
+    gap: .25rem;
+    padding: .55rem;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+  }
+
+  nav b { display: none; }
+
+  nav button {
+    white-space: nowrap;
+    width: auto;
+    flex-shrink: 0;
+    padding: .6rem .75rem;
+    margin: 0;
+    font-size: .8rem;
+  }
+
+  main { padding: 1rem .85rem 2.5rem; }
+  .card { padding: 1rem; border-radius: 10px; }
+  .grid { grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: .7rem; }
+  .steps { gap: .9rem; }
+  .top { align-items: flex-start; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card { animation: fadeIn .22s ease both; }
+
+  @keyframes fadeIn {
+    from { opacity: .65; transform: translateY(3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+
+/* ===== KHET DATA TRUST LOGIN ===== */
+
+body:not(.kdt-authenticated) #app {
+  display: none !important;
+}
+
+#loginScreen {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 0.85fr;
+  background: #f7f8f2;
+  color: #243b2d;
+  font-family: inherit;
+}
+
+body.kdt-authenticated #loginScreen {
+  display: none;
+}
+
+.login-panel {
+  width: 100%;
+  max-width: 590px;
+  margin: auto;
+  padding: 48px clamp(24px, 6vw, 76px);
+  box-sizing: border-box;
+}
+
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  margin-bottom: 62px;
+}
+
+.brand-mark {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: #24583d;
+  color: #fff;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.login-brand h1 {
+  margin: 0;
+  font-size: 20px;
+  letter-spacing: -0.6px;
+}
+
+.login-brand p {
+  margin: 5px 0 0;
+  color: #788778;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.login-heading .eyebrow {
+  color: #588060;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.7px;
+}
+
+.login-heading h2 {
+  margin: 15px 0;
+  font-size: clamp(32px, 4vw, 45px);
+  line-height: 1.13;
+  letter-spacing: -1.8px;
+  font-weight: 750;
+}
+
+.login-heading > p {
+  max-width: 390px;
+  margin-bottom: 30px;
+  color: #758174;
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+#loginForm > label,
+.role-label {
+  display: block;
+  margin: 20px 0 9px;
+  color: #334839;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+#loginName {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 15px;
+  border: 1px solid #dfe5d9;
+  border-radius: 10px;
+  outline: none;
+  background: #fff;
+  color: #243b2d;
+  font: inherit;
+  font-size: 13px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#loginName:focus {
+  border-color: #578665;
+  box-shadow: 0 0 0 3px #57866518;
+}
+
+.role-options {
+  display: grid;
+  gap: 10px;
+}
+
+.role-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 14px;
+  border: 1px solid #e0e6dc;
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s,
+              transform 0.2s;
+}
+
+.role-option:hover {
+  border-color: #91b39a;
+  transform: translateY(-1px);
+}
+
+.role-option:has(input:checked) {
+  border-color: #4f805e;
+  background: #edf4eb;
+  box-shadow: 0 0 0 1px #4f805e inset;
+}
+
+.role-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.role-option:focus-within {
+  outline: 2px solid #4f805e;
+  outline-offset: 3px;
+}
+
+.role-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 10px;
+  background: #f1f4eb;
+  font-size: 19px;
+}
+
+.role-info {
+  display: grid;
+  gap: 4px;
+  flex: 1;
+}
+
+.role-info strong {
+  font-size: 12px;
+  color: #294333;
+}
+
+.role-info small {
+  color: #7b887c;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.role-check {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid #d9e1d6;
+  border-radius: 50%;
+  color: transparent;
+  font-size: 12px;
+}
+
+.role-option:has(input:checked) .role-check {
+  border-color: #386c49;
+  background: #386c49;
+  color: #fff;
+}
+
+.login-button {
+  width: 100%;
+  margin-top: 23px;
+  padding: 15px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  border-radius: 10px;
+  background: #24583d;
+  color: #fff;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.login-button:hover {
+  background: #19462f;
+  transform: translateY(-1px);
+}
+
+.login-button span {
+  font-size: 20px;
+}
+
+.login-note {
+  margin-top: 18px;
+  color: #929c8e;
+  font-size: 10px;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.login-visual {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(17, 47, 30, 0.03) 0%,
+      rgba(17, 47, 30, 0.35) 45%,
+      rgba(17, 47, 30, 0.92) 100%
+    ),
+    url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1400&q=85")
+    center / cover no-repeat;
+}
+
+.visual-overlay {
+  width: 100%;
+  padding: clamp(30px, 5vw, 65px);
+  color: #fff;
+}
+
+.visual-tag {
+  display: inline-block;
+  padding: 8px 11px;
+  border: 1px solid #ffffff55;
+  border-radius: 20px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+}
+
+.visual-overlay h2 {
+  margin: 22px 0 12px;
+  font-size: clamp(29px, 3.5vw, 44px);
+  line-height: 1.15;
+  letter-spacing: -1.2px;
+}
+
+.visual-overlay > p {
+  color: #e0e9dd;
+  font-size: 13px;
+}
+
+.visual-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-top: 45px;
+  padding-top: 23px;
+  border-top: 1px solid #ffffff45;
+}
+
+.visual-stats div {
+  display: grid;
+  gap: 6px;
+}
+
+.visual-stats strong {
+  font-size: 13px;
+}
+
+.visual-stats span {
+  color: #d5e0d1;
+  font-size: 10px;
+}
+
+@media (max-width: 850px) {
+  #loginScreen {
+    grid-template-columns: 1fr;
+  }
+
+  .login-panel {
+    max-width: 540px;
+    padding: 35px 25px;
+  }
+
+  .login-brand {
+    margin-bottom: 42px;
+  }
+
+  .login-visual {
+    min-height: 340px;
+  }
+}
+
+@media (max-width: 420px) {
+  .login-heading h2 {
+    font-size: 34px;
+  }
+
+  .visual-stats {
+    gap: 18px;
+  }
+}
+
+</style>
+
+</head><body>
+  
+<!-- Khet Data Trust: Welcome / Login Screen -->
+<div id="loginScreen">
+  <div class="login-panel">
+
+    <div class="login-brand">
+      <div class="brand-mark">K</div>
+      <div>
+        <h1>Khet Data Trust</h1>
+        <p>AGRICULTURE · DATA · TRUST</p>
+      </div>
+    </div>
+
+    <div class="login-heading">
+      <span class="eyebrow">WELCOME TO YOUR DATA COMMUNITY</span>
+      <h2>Good data grows<br />better futures.</h2>
+      <p>
+        A community-led platform to manage, protect,
+        and share agricultural data responsibly.
+      </p>
+    </div>
+
+    <form id="loginForm">
+      <label for="loginName">Your name</label>
+      <input
+        type="text"
+        id="loginName"
+        placeholder="Enter your name"
+        required
+      />
+
+      <label class="role-label">Continue as</label>
+
+      <div class="role-options">
+        <label class="role-option">
+          <input type="radio" name="userRole" value="Farmer" required />
+          <span class="role-icon">🌾</span>
+          <span class="role-info">
+            <strong>Farmer</strong>
+            <small>Manage your farm data and permissions</small>
+          </span>
+          <span class="role-check">✓</span>
+        </label>
+
+        <label class="role-option">
+          <input type="radio" name="userRole" value="FPO Administrator" />
+          <span class="role-icon">🏡</span>
+          <span class="role-info">
+            <strong>FPO Administrator</strong>
+            <small>Manage members and community data</small>
+          </span>
+          <span class="role-check">✓</span>
+        </label>
+
+        <label class="role-option">
+          <input type="radio" name="userRole" value="Data Requester" />
+          <span class="role-icon">📊</span>
+          <span class="role-info">
+            <strong>Data Requester</strong>
+            <small>Request access to approved datasets</small>
+          </span>
+          <span class="role-check">✓</span>
+        </label>
+      </div>
+
+      <button type="submit" class="login-button">
+        Enter Khet Data Trust <span>→</span>
+      </button>
+
+      <p class="login-note">
+        Built on transparency, consent, and community ownership.
+      </p>
+    </form>
+  </div>
+
+  <div class="login-visual">
+    <div class="visual-overlay">
+      <span class="visual-tag">DATA WITH PURPOSE</span>
+      <h2>Empowering the people<br />who grow our future.</h2>
+      <p>
+        Your data. Your choices. Your community.
+      </p>
+      <div class="visual-stats">
+        <div><strong>Trust</strong><span>By design</span></div>
+        <div><strong>Consent</strong><span>First</span></div>
+        <div><strong>Ownership</strong><span>Community-led</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="demo">Demo mode: synthetic data only. All checks run in this browser and are not production security.</div>
 <div class="shell"><nav id="nav" aria-label="Main"></nav><main id="app"></main></div><div id="toast" hidden role="status"></div>
 <script>
@@ -154,4 +1010,41 @@ document.getElementById('rs').onchange=e=>act('role',{v:e.target.value});const o
 document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&!b.disabled)act(b.dataset.a,b.dataset)});
 document.addEventListener('input',e=>{if(e.target.closest('#sim'))simOut()});
 load();status();render();
+
+
+/* ===== KHET DATA TRUST ROLE LOGIN ===== */
+
+document.getElementById("loginForm").addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const name = document.getElementById("loginName").value.trim();
+  const selectedRole = document.querySelector(
+    'input[name="userRole"]:checked'
+  );
+
+  if (!name || !selectedRole) {
+    alert("Please enter your name and select your role.");
+    return;
+  }
+
+  // Store the current demo session for this page.
+  window.kdtCurrentUser = {
+    name: name,
+    role: selectedRole.value
+  };
+
+  // Reveal the existing dashboard without rebuilding it.
+  document.body.classList.add("kdt-authenticated");
+
+  // Update the browser tab title.
+  document.title = "Khet Data Trust | " + selectedRole.value;
+
+  // Optional: make the logged-in identity available to your dashboard.
+  document.dispatchEvent(
+    new CustomEvent("kdt:login", {
+      detail: window.kdtCurrentUser
+    })
+  );
+});
+
 </script></body></html>
