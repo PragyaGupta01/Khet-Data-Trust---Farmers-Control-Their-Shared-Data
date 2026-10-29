@@ -1,1226 +1,1281 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Khet Data Trust</title>
-<link href="https://fonts.googleapis.com/css2?family=Literata:wght@500;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-
-<style>
-:root {
-  color-scheme: light;
-  --bg: #f5f7f2;
-  --card: #ffffff;
-  --ink: #202b24;
-  --mut: #707b72;
-  --line: #e4e9e1;
-  --g: #245b40;
-  --g2: #397957;
-  --gold: #a87830;
-  --goldbg: #f8f0df;
-  --ok: #26734a;
-  --bad: #ad4545;
-  --sl: #53645a;
-  box-sizing: border-box;
-  padding-top: env(safe-area-inset-top, 0px);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-}
-
-* { box-sizing: border-box; }
-
-html { scroll-behavior: smooth; }
-html, body { margin: 0; min-height: 100%; }
-
-body {
-  background:
-    radial-gradient(ellipse at 85% 0%, rgba(210, 230, 208, .24), transparent 34%),
-    var(--bg);
-  color: var(--ink);
-  font: 14px/1.65 'Public Sans', system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
-
-h1, h2, h3 {
-  font-family: 'Literata', Georgia, serif;
-  margin: 0 0 .65rem;
-  line-height: 1.3;
-  letter-spacing: -.025em;
-}
-
-h1 { font-size: clamp(1.65rem, 3vw, 2.15rem); }
-h2 { font-size: 1.45rem; }
-h3 { font-size: 1.06rem; letter-spacing: -.01em; }
-
-p { margin: .55rem 0; }
-a { color: var(--g); }
-
-.demo {
-  background: #203e2e;
-  color: #e5efe4;
-  padding: .45rem 1rem;
-  font-size: .76rem;
-  letter-spacing: .025em;
-  text-align: center;
-  border-bottom: 1px solid rgba(255,255,255,.12);
-}
-
-.shell {
-  display: grid;
-  grid-template-columns: 248px minmax(0, 1fr);
-  min-height: 100vh;
-}
-
-/* Sidebar */
-nav {
-  background: linear-gradient(165deg, #1e3d2d 0%, #244b36 52%, #193528 100%);
-  padding: 1.5rem .85rem;
-  position: sticky;
-  top: 0;
-  align-self: start;
-  height: 100vh;
-  overflow-y: auto;
-  border-right: 1px solid rgba(255,255,255,.07);
-}
-
-nav b {
-  display: block;
-  color: #f4f5e9;
-  font: 700 1.22rem 'Literata', Georgia, serif;
-  padding: .45rem .7rem 1.7rem;
-  letter-spacing: -.035em;
-}
-
-nav button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  background: transparent;
-  border: 1px solid transparent;
-  color: #cbd9cd;
-  padding: .72rem .8rem;
-  margin: .2rem 0;
-  border-radius: 8px;
-  font: 500 .86rem 'Public Sans', system-ui, sans-serif;
-  cursor: pointer;
-  transition: background .18s ease, color .18s ease;
-}
-
-nav button:hover {
-  background: rgba(255,255,255,.08);
-  color: #fff;
-}
-
-nav button[aria-current="page"] {
-  background: #f3f6ed;
-  color: #244b36;
-  font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0,0,0,.08);
-}
-
-main {
-  padding: 1.6rem clamp(1rem, 3vw, 2.5rem) 3.5rem;
-  max-width: 1440px;
-  width: 100%;
-  min-width: 0;
-  margin: 0 auto;
-}
-
-.top {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1.6rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--line);
-}
-
-.top > .mut {
-  color: var(--g);
-  font-weight: 600;
-  font-size: .84rem;
-  letter-spacing: .015em;
-}
-
-/* Cards and layout */
-.card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 13px;
-  padding: 1.3rem;
-  margin-bottom: 1.1rem;
-  box-shadow: 0 2px 5px rgba(31, 53, 36, .025);
-  transition: border-color .2s ease, box-shadow .2s ease;
-}
-
-.card:hover {
-  border-color: #d4dfd2;
-  box-shadow: 0 5px 18px rgba(31, 53, 36, .045);
-}
-
-.grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-}
-
-.grid .card { margin: 0; }
-
-.big {
-  font: 700 2rem 'Literata', Georgia, serif;
-  color: var(--g);
-  letter-spacing: -.04em;
-  margin-bottom: .2rem;
-}
-
-.mut {
-  color: var(--mut);
-  font-size: .84rem;
-}
-
-/* Hero section on the Overview page */
-#app > .card:first-of-type:has(.steps) {
-  background:
-    radial-gradient(ellipse at 100% 0%, rgba(185, 216, 183, .25), transparent 45%),
-    linear-gradient(145deg, #ffffff, #fafcf7);
-  border-color: #dce7d9;
-  padding: clamp(1.3rem, 3vw, 2rem);
-}
-
-#app > .card:first-of-type:has(.steps) h1 {
-  max-width: 750px;
-  color: #214d35;
-  margin-bottom: .85rem;
-}
-
-.steps {
-  display: grid;
-  gap: 1.2rem;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  margin: 1.5rem 0;
-}
-
-.steps div {
-  border-top: 2px solid #b5cdb3;
-  padding-top: .75rem;
-}
-
-.steps div b { color: var(--g); }
-
-/* Forms and buttons */
-button.b, select, input, textarea {
-  font: inherit;
-  border-radius: 7px;
-  border: 1px solid #d7e0d5;
-  padding: .57rem .75rem;
-  background: #fff;
-  color: var(--ink);
-}
-
-button.b {
-  cursor: pointer;
-  background: var(--g);
-  color: #fff;
-  border-color: var(--g);
-  font-size: .84rem;
-  font-weight: 600;
-  transition: background .18s ease, transform .18s ease;
-}
-
-button.b:hover:not(:disabled) {
-  background: #19452f;
-  transform: translateY(-1px);
-}
-
-button.b.o {
-  background: #fff;
-  color: var(--g);
-  border-color: #cbdaca;
-}
-
-button.b.o:hover:not(:disabled) {
-  background: #f0f6ee;
-}
-
-button.b.d {
-  background: #a53f3f;
-  border-color: #a53f3f;
-  color: #fff;
-}
-
-button.b:disabled {
-  opacity: .45;
-  cursor: not-allowed;
-}
-
-button, select, input, textarea { max-width: 100%; }
-select, input, textarea { accent-color: var(--g); }
-input[type="checkbox"], input[type="range"] { accent-color: var(--g); }
-
-:focus-visible {
-  outline: 3px solid #c89b50;
-  outline-offset: 3px;
-}
-
-/* Tables */
-.wrap { overflow-x: auto; }
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: .84rem;
-}
-
-th, td {
-  text-align: left;
-  padding: .8rem .65rem;
-  border-bottom: 1px solid #e9ede7;
-  vertical-align: top;
-}
-
-th {
-  color: #69766c;
-  font-size: .75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: .045em;
-  background: #f8faf6;
-}
-
-tbody tr:hover, table tr:hover td {
-  background: #fafcf8;
-}
-
-/* Status indicators */
-.chip {
-  display: inline-block;
-  padding: .2rem .6rem;
-  border-radius: 5px;
-  font-size: .73rem;
-  font-weight: 600;
-  background: #edf0eb;
-  color: #536054;
-  white-space: nowrap;
-}
-
-.Pending, .proposed {
-  background: #fbf1dc;
-  color: #91631d;
-}
-
-.Approved, .active {
-  background: #e2f2e6;
-  color: #276a40;
-}
-
-.Rejected, .Revoked {
-  background: #fae9e7;
-  color: #a23e3e;
-}
-
-.Expired, .superseded {
-  background: #e9edf0;
-  color: #56636c;
-}
-
-.bar {
-  background: #edf1eb;
-  border-radius: 5px;
-  height: 8px;
-  position: relative;
-  min-width: 80px;
-  overflow: visible;
-}
-
-.bar i {
-  display: block;
-  height: 100%;
-  background: linear-gradient(90deg, #548b61, #2d6945);
-  border-radius: 5px;
-}
-
-.bar u {
-  position: absolute;
-  top: -3px;
-  bottom: -3px;
-  width: 2px;
-  background: #b18435;
-}
-
-.row {
-  display: flex;
-  gap: .65rem;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.f {
-  display: grid;
-  gap: .9rem;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-}
-
-.f label {
-  display: grid;
-  gap: .35rem;
-  font-size: .82rem;
-  color: var(--mut);
-}
-
-/* Timeline and callouts */
-.tl {
-  border-left: 2px solid #cbdcc9;
-  margin-left: .55rem;
-  padding-left: 1.1rem;
-}
-
-.tl div {
-  margin-bottom: .9rem;
-  position: relative;
-}
-
-.tl div:before {
-  content: "";
-  position: absolute;
-  left: -1.48rem;
-  top: .45rem;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #729775;
-  box-shadow: 0 0 0 3px #edf4eb;
-}
-
-.note {
-  border-left: 3px solid #c39a4d;
-  background: #fbf5e8;
-  padding: .8rem 1rem;
-  border-radius: 0 8px 8px 0;
-  font-size: .85rem;
-  margin: .75rem 0;
-  color: #574a31;
-}
-
-.hash {
-  font-family: ui-monospace, monospace;
-  font-size: .74rem;
-  color: #66756b;
-}
-
-.bad { color: var(--bad); font-weight: 600; }
-.ok { color: var(--ok); font-weight: 600; }
-
-#toast {
-  position: fixed;
-  bottom: 1.25rem;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #203e2e;
-  color: #fff;
-  padding: .8rem 1.2rem;
-  border-radius: 9px;
-  box-shadow: 0 8px 28px rgba(0,0,0,.16);
-  max-width: 90%;
-  z-index: 9;
-  font-size: .86rem;
-}
-
-/* Responsive layout */
-@media (max-width: 760px) {
-  .shell { display: block; }
-
-  nav {
-    position: sticky;
-    z-index: 5;
-    top: 0;
-    height: auto;
-    display: flex;
-    overflow-x: auto;
-    gap: .25rem;
-    padding: .55rem;
-    border-right: 0;
-    border-bottom: 1px solid rgba(255,255,255,.1);
-  }
-
-  nav b { display: none; }
-
-  nav button {
-    white-space: nowrap;
-    width: auto;
-    flex-shrink: 0;
-    padding: .6rem .75rem;
-    margin: 0;
-    font-size: .8rem;
-  }
-
-  main { padding: 1rem .85rem 2.5rem; }
-  .card { padding: 1rem; border-radius: 10px; }
-  .grid { grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: .7rem; }
-  .steps { gap: .9rem; }
-  .top { align-items: flex-start; }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .card { animation: fadeIn .22s ease both; }
-
-  @keyframes fadeIn {
-    from { opacity: .65; transform: translateY(3px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html { scroll-behavior: auto; }
-  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
-}
-
-
-/* ===== KHET DATA TRUST LOGIN ===== */
-
-body:not(.kdt-authenticated) #app {
-  display: none !important;
-}
-
-#loginScreen {
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr 0.85fr;
-  background: #f7f8f2;
-  color: #243b2d;
-  font-family: inherit;
-}
-
-body.kdt-authenticated #loginScreen {
-  display: none;
-}
-
-.login-panel {
-  width: 100%;
-  max-width: 590px;
-  margin: auto;
-  padding: 48px clamp(24px, 6vw, 76px);
-  box-sizing: border-box;
-}
-
-.login-brand {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  margin-bottom: 62px;
-}
-
-.brand-mark {
-  width: 46px;
-  height: 46px;
-  display: grid;
-  place-items: center;
-  border-radius: 14px;
-  background: #24583d;
-  color: #fff;
-  font-size: 25px;
-  font-weight: 800;
-}
-
-.login-brand h1 {
-  margin: 0;
-  font-size: 20px;
-  letter-spacing: -0.6px;
-}
-
-.login-brand p {
-  margin: 5px 0 0;
-  color: #788778;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 2px;
-}
-
-.login-heading .eyebrow {
-  color: #588060;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1.7px;
-}
-
-.login-heading h2 {
-  margin: 15px 0;
-  font-size: clamp(32px, 4vw, 45px);
-  line-height: 1.13;
-  letter-spacing: -1.8px;
-  font-weight: 750;
-}
-
-.login-heading > p {
-  max-width: 390px;
-  margin-bottom: 30px;
-  color: #758174;
-  font-size: 13px;
-  line-height: 1.8;
-}
-
-#loginForm > label,
-.role-label {
-  display: block;
-  margin: 20px 0 9px;
-  color: #334839;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-#loginName {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 14px 15px;
-  border: 1px solid #dfe5d9;
-  border-radius: 10px;
-  outline: none;
-  background: #fff;
-  color: #243b2d;
-  font: inherit;
-  font-size: 13px;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-#loginName:focus {
-  border-color: #578665;
-  box-shadow: 0 0 0 3px #57866518;
-}
-
-.role-options {
-  display: grid;
-  gap: 10px;
-}
-
-.role-option {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 13px 14px;
-  border: 1px solid #e0e6dc;
-  border-radius: 12px;
-  background: #fff;
-  cursor: pointer;
-  transition: border-color 0.2s, background 0.2s,
-              transform 0.2s;
-}
-
-.role-option:hover {
-  border-color: #91b39a;
-  transform: translateY(-1px);
-}
-
-.role-option:has(input:checked) {
-  border-color: #4f805e;
-  background: #edf4eb;
-  box-shadow: 0 0 0 1px #4f805e inset;
-}
-
-.role-option input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.role-option:focus-within {
-  outline: 2px solid #4f805e;
-  outline-offset: 3px;
-}
-
-.role-icon {
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  flex-shrink: 0;
-  border-radius: 10px;
-  background: #f1f4eb;
-  font-size: 19px;
-}
-
-.role-info {
-  display: grid;
-  gap: 4px;
-  flex: 1;
-}
-
-.role-info strong {
-  font-size: 12px;
-  color: #294333;
-}
-
-.role-info small {
-  color: #7b887c;
-  font-size: 10px;
-  line-height: 1.5;
-}
-
-.role-check {
-  display: grid;
-  place-items: center;
-  width: 20px;
-  height: 20px;
-  border: 1px solid #d9e1d6;
-  border-radius: 50%;
-  color: transparent;
-  font-size: 12px;
-}
-
-.role-option:has(input:checked) .role-check {
-  border-color: #386c49;
-  background: #386c49;
-  color: #fff;
-}
-
-.login-button {
-  width: 100%;
-  margin-top: 23px;
-  padding: 15px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border: none;
-  border-radius: 10px;
-  background: #24583d;
-  color: #fff;
-  font: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s, transform 0.2s;
-}
-
-.login-button:hover {
-  background: #19462f;
-  transform: translateY(-1px);
-}
-
-.login-button span {
-  font-size: 20px;
-}
-
-.login-note {
-  margin-top: 18px;
-  color: #929c8e;
-  font-size: 10px;
-  line-height: 1.7;
-  text-align: center;
-}
-
-.login-visual {
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  min-height: 100vh;
-  overflow: hidden;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(17, 47, 30, 0.03) 0%,
-      rgba(17, 47, 30, 0.35) 45%,
-      rgba(17, 47, 30, 0.92) 100%
-    ),
-    url("https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1400&q=85")
-    center / cover no-repeat;
-}
-
-.visual-overlay {
-  width: 100%;
-  padding: clamp(30px, 5vw, 65px);
-  color: #fff;
-}
-
-.visual-tag {
-  display: inline-block;
-  padding: 8px 11px;
-  border: 1px solid #ffffff55;
-  border-radius: 20px;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1.8px;
-}
-
-.visual-overlay h2 {
-  margin: 22px 0 12px;
-  font-size: clamp(29px, 3.5vw, 44px);
-  line-height: 1.15;
-  letter-spacing: -1.2px;
-}
-
-.visual-overlay > p {
-  color: #e0e9dd;
-  font-size: 13px;
-}
-
-.visual-stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 28px;
-  margin-top: 45px;
-  padding-top: 23px;
-  border-top: 1px solid #ffffff45;
-}
-
-.visual-stats div {
-  display: grid;
-  gap: 6px;
-}
-
-.visual-stats strong {
-  font-size: 13px;
-}
-
-.visual-stats span {
-  color: #d5e0d1;
-  font-size: 10px;
-}
-
-@media (max-width: 850px) {
-  #loginScreen {
-    grid-template-columns: 1fr;
-  }
-
-  .login-panel {
-    max-width: 540px;
-    padding: 35px 25px;
-  }
-
-  .login-brand {
-    margin-bottom: 42px;
-  }
-
-  .login-visual {
-    min-height: 340px;
-  }
-}
-
-@media (max-width: 420px) {
-  .login-heading h2 {
-    font-size: 34px;
-  }
-
-  .visual-stats {
-    gap: 18px;
-  }
-}
-  
-.auth-link {
-  background: transparent;
-  border: 0;
-  padding: 0;
-  color: #24583d;
-  font: inherit;
-  font-weight: 700;
-  text-decoration: underline;
-  cursor: pointer;
-}
-
-#loginForm[hidden],
-#registerForm[hidden] {
-  display: none !important;
-}
-
-#registerForm > label,
-#loginForm > label {
-  display: block;
-  margin: 15px 0 7px;
-  color: #334839;
-  font-size: 12px;
-  font-weight: 700;
-}
-
-#registerForm input,
-#registerForm select,
-#loginForm input {
-  width: 100%;
-  min-height: 44px;
-}
-
-
-</style>
-
-</head><body>
-  
-<!-- Khet Data Trust: Welcome / Login Screen -->
-<div id="loginScreen">
-  <div class="login-panel">
-
-    <div class="login-brand">
-      <div class="brand-mark">K</div>
-      <div>
-        <h1>Khet Data Trust</h1>
-        <p>AGRICULTURE · DATA · TRUST</p>
-      </div>
-    </div>
-
-    <div class="login-heading">
-      <span class="eyebrow">WELCOME TO YOUR DATA COMMUNITY</span>
-      <h2>Good data grows<br />better futures.</h2>
-      <p>
-        A community-led platform to manage, protect,
-        and share agricultural data responsibly.
-      </p>
-    </div>
-
-    
-<div class="login-heading">
-  <span class="eyebrow">KHET DATA TRUST</span>
-  <h2 id="authTitle">Welcome back.</h2>
-  <p id="authDescription">Sign in to access your agricultural data community.</p>
-</div>
-
-<div id="loginMessage" class="note" hidden role="status"></div>
-
-<form id="loginForm">
-  <label for="loginEmail">Email address</label>
-  <input id="loginEmail" type="email" autocomplete="email"
-         placeholder="you@example.com" required />
-
-  <label for="loginPhone">Phone number</label>
-  <input id="loginPhone" type="tel" autocomplete="tel"
-         placeholder="+91 98765 43210" required />
-
-  <label for="loginPassword">Password</label>
-  <input id="loginPassword" type="password"
-         autocomplete="current-password"
-         placeholder="Enter your password" required minlength="8" />
-
-  <button type="submit" class="login-button">
-    Sign in <span>→</span>
-  </button>
-
-  <p class="login-note">
-    New to Khet Data Trust?
-    <button type="button" class="auth-link" id="showRegister">
-      Register first
-    </button>
-  </p>
-</form>
-
-<form id="registerForm" hidden>
-  <label for="regName">Full name</label>
-  <input id="regName" autocomplete="name"
-         placeholder="Enter your full name" required />
-
-  <label for="regEmail">Email address</label>
-  <input id="regEmail" type="email" autocomplete="email"
-         placeholder="you@example.com" required />
-
-  <label for="regPhone">Phone number</label>
-  <input id="regPhone" type="tel" autocomplete="tel"
-         placeholder="+91 98765 43210" required />
-
-  <label for="regPassword">Create password</label>
-  <input id="regPassword" type="password"
-         autocomplete="new-password"
-         minlength="8" placeholder="At least 8 characters" required />
-
-  <label for="regPassword2">Confirm password</label>
-  <input id="regPassword2" type="password"
-         autocomplete="new-password"
-         minlength="8" placeholder="Enter password again" required />
-
-  <label for="regRole">Register as</label>
-  <select id="regRole" required>
-    <option value="farmer">Farmer</option>
-    <option value="requester">Data Requester</option>
-    <option value="admin">FPO Administrator — requires authorization</option>
-  </select>
-
-  <button type="submit" class="login-button">
-    Create account <span>→</span>
-  </button>
-
-  <p class="login-note">
-    Already registered?
-    <button type="button" class="auth-link" id="showLogin">
-      Sign in
-    </button>
-  </p>
-</form>
-
-
-      <label class="role-label">Continue as</label>
-
-      <div class="role-options">
-        <label class="role-option">
-          <input type="radio" name="userRole" value="Farmer" required />
-          <span class="role-icon">🌾</span>
-          <span class="role-info">
-            <strong>Farmer</strong>
-            <small>Manage your farm data and permissions</small>
-          </span>
-          <span class="role-check">✓</span>
-        </label>
-
-        <label class="role-option">
-          <input type="radio" name="userRole" value="FPO Administrator" />
-          <span class="role-icon">🏡</span>
-          <span class="role-info">
-            <strong>FPO Administrator</strong>
-            <small>Manage members and community data</small>
-          </span>
-          <span class="role-check">✓</span>
-        </label>
-
-        <label class="role-option">
-          <input type="radio" name="userRole" value="Data Requester" />
-          <span class="role-icon">📊</span>
-          <span class="role-info">
-            <strong>Data Requester</strong>
-            <small>Request access to approved datasets</small>
-          </span>
-          <span class="role-check">✓</span>
-        </label>
-      </div>
-
-      <button type="submit" class="login-button">
-        Enter Khet Data Trust <span>→</span>
-      </button>
-
-      <p class="login-note">
-        Built on transparency, consent, and community ownership.
-      </p>
-    </form>
-  </div>
-
-  <div class="login-visual">
-    <div class="visual-overlay">
-      <span class="visual-tag">DATA WITH PURPOSE</span>
-      <h2>Empowering the people<br />who grow our future.</h2>
-      <p>
-        Your data. Your choices. Your community.
-      </p>
-      <div class="visual-stats">
-        <div><strong>Trust</strong><span>By design</span></div>
-        <div><strong>Consent</strong><span>First</span></div>
-        <div><strong>Ownership</strong><span>Community-led</span></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div class="demo">Demo mode: synthetic data only. All checks run in this browser and are not production security.</div>
-<div class="shell"><nav id="nav" aria-label="Main"></nav><main id="app"></main></div><div id="toast" hidden role="status"></div>
-<script>
-const D=864e5,T0=Date.UTC(2026,9,29,9,0),N=120,KEY='khet-v1';
-const PUR=["Academic research","Government planning","Commercial product","Data resale"];
-const OUT={yield_crop:["Average yield by crop","ds1"],yield_village:["Average yield by village","ds1"],crop_dist:["Crop distribution","ds1"],irr_village:["Irrigation mix by village","ds3"]};
-const DS=[["ds1","Crop pattern and yield","Individual records (120)","Medium","Kharif and Rabi 2025-26"],["ds2","Soil measurements","Individual records (120)","High","Rabi 2025-26"],["ds3","Irrigation usage","Individual records (120)","Medium","2025-26"],["ds4","Market price trends","Group-level summary","Low","Apr to Sep 2026"]];
-const ORGS=["Terai Agri Research Institute (demo)","UP Agriculture Dept. Planning Cell (demo)","AgriMart Inputs Pvt Ltd (demo)"];
-const NAV={admin:["Overview","Farmer Data Registry","Governance and Voting","Access Requests","Privacy Analytics","Audit Trail","Benefits and Transparency","Settings"],farmer:["Overview","Farmer Data Registry","Governance and Voting","Access Requests","Privacy Analytics","Audit Trail","Benefits and Transparency"],requester:["Overview","Access Requests","Benefits and Transparency"]};
-function rng(s){return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
-const VIL=[["Rampur",34],["Salempur",28],["Chiraiya",26],["Belghat",19],["Nautanwa",9],["Pipraich",4]],CR=[["Wheat",18],["Rice",20],["Sugarcane",300],["Maize",22],["Mustard",7]],IR=["Tubewell","Canal","Rain-fed"];
-const F=(()=>{const r=rng(42),a=[];let id=1;VIL.forEach(([v,n])=>{for(let i=0;i<n;i++){const c=CR[Math.floor(r()**1.3*5)];a.push({id:id++,village:v,crop:c[0],yield:+(c[1]*(0.8+r()*.4)).toFixed(1),irr:IR[Math.floor(r()*3)],ph:+(5.8+r()*1.8).toFixed(1)})}});return a})();
-const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function hs(s){let h1=0xdeadbeef,h2=0x41c6ce57;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677)}h1=Math.imul(h1^h1>>>16,2246822507)^Math.imul(h2^h2>>>13,3266489909);h2=Math.imul(h2^h2>>>16,2246822507)^Math.imul(h1^h1>>>13,3266489909);return(4294967296*(2097151&h2)+(h1>>>0)).toString(16).padStart(14,'0')}
-let S;
-function log(actor,action,ds,purpose,decision,pv,detail,ts){const p=S.audit.length?S.audit[S.audit.length-1].hash:'genesis';const e={i:S.audit.length,ts:ts||S.now,actor,action,ds:ds||'-',purpose:purpose||'-',decision:decision||'-',pv:pv||'-',detail:detail||'',prev:p};e.hash=hs(p+JSON.stringify([e.i,e.ts,actor,e.action,e.ds,e.purpose,e.decision,e.pv,e.detail]));S.audit.push(e)}
-const rehash=(e,p)=>hs(p+JSON.stringify([e.i,e.ts,e.actor,e.action,e.ds,e.purpose,e.decision,e.pv,e.detail]));
-function seed(){S={role:'admin',view:'Overview',now:T0,org:ORGS[0],farmer:7,audit:[],results:{},leak:false,sel:'ds1',tamper:null,
-policies:[{v:1,title:"Baseline research sharing",status:'active',purposes:["Academic research"],k:10,maxDays:45,thr:.66,quorum:.5,at:T0-120*D},{v:2,title:"Add government planning use",status:'proposed',purposes:["Academic research","Government planning"],k:10,maxDays:45,thr:.66,quorum:.5,at:T0-14*D}],votes:{1:{},2:{}},requests:[],ledger:[]};
-for(let i=1;i<=100;i++)S.votes[1][i]=i%10==0?'against':i%17==0?'abstain':'for';
-for(let i=20;i<=77;i++)S.votes[2][i]=i<=60?'for':i<=72?'against':'abstain';
-const A='FPO Admin';log(A,'policy proposed',null,null,'Open for voting',1,'Baseline research sharing',T0-120*D);log('Members','votes closed',null,null,'Approved',1,'Quorum met, approval above 66%',T0-110*D);log(A,'policy activated',null,null,'Active',1,'',T0-110*D);
-S.requests=[{id:'R-101',org:ORGS[0],purpose:"Academic research",ds:'ds1',out:'yield_crop',days:30,contact:'research@terai-demo.example',status:'Expired',at:T0-90*D,apv:1,exp:T0-60*D,reason:'Matched policy v1: academic research, 30 days.',rel:1},
-{id:'R-102',org:ORGS[0],purpose:"Academic research",ds:'ds1',out:'yield_crop',days:30,contact:'research@terai-demo.example',status:'Pending',at:T0-2*D,reason:'',rel:0},
-{id:'R-103',org:ORGS[2],purpose:"Commercial product",ds:'ds1',out:'crop_dist',days:90,contact:'data@agrimart-demo.example',status:'Pending',at:T0-D,reason:'',rel:0}];
-log(ORGS[0],'request submitted','ds1',"Academic research",'Pending',1,'R-101',T0-90*D);log(A,'request approved','ds1',"Academic research",'Approved',1,'R-101 for 30 days',T0-90*D);log(ORGS[0],'data released','ds1',"Academic research",'Allowed',1,'R-101 average yield by crop',T0-89*D);log('System','access expired','ds1',"Academic research",'Expired',1,'R-101',T0-60*D);
-log(A,'policy proposed',null,null,'Open for voting',2,'Add government planning use',T0-14*D);log(ORGS[0],'request submitted','ds1',"Academic research",'Pending',1,'R-102',T0-2*D);log(ORGS[2],'request submitted','ds1',"Commercial product",'Pending',1,'R-103',T0-D);
-S.ledger=[{ts:T0-89*D,d:'Research data-use contribution from R-101 (simulated)',a:5000},{ts:T0-70*D,d:'Soil-testing camp for members (simulated)',a:-3500}]}
-function load(){try{const j=localStorage.getItem(KEY);if(j){S=JSON.parse(j);return}}catch(e){}seed()}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
-const act_=()=>S.policies.find(p=>p.status=='active'),fmt=t=>new Date(t).toISOString().slice(0,10),tally=v=>{const o={for:0,against:0,abstain:0};Object.values(S.votes[v]).forEach(x=>o[x]++);return o};
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,3500)}
-function evalP(p){if(p.status!='proposed')return;const t=tally(p.v),cast=t.for+t.against+t.abstain;if(cast>=Math.ceil(p.quorum*N)&&t.for+t.against>0&&t.for/(t.for+t.against)>=p.thr){const o=act_();if(o)o.status='superseded';p.status='active';log('Members','votes closed',null,null,'Approved',p.v,`${t.for} for, ${t.against} against, ${t.abstain} abstain`);log('System','policy activated',null,null,'Active',p.v,p.title)}}
-function agg(out,k){const rows=[];const grp=(key,list)=>{const m={};F.forEach(f=>(m[f[key]]=m[f[key]]||[]).push(f));return Object.entries(m).filter(([a])=>!list||list.includes(a))};
-if(out=='yield_crop'||out=='yield_village')grp(out=='yield_crop'?'crop':'village').forEach(([l,a])=>{const sup=a.length<k;rows.push({l,sup,v:sup?null:+(a.reduce((s,x)=>s+x.yield,0)/a.length).toFixed(1),u:'q/acre',n:sup?null:a.length})});
-if(out=='crop_dist')grp('crop').forEach(([l,a])=>{const sup=a.length<k;rows.push({l,sup,v:sup?null:+(a.length/N*100).toFixed(1),u:'% of members',n:sup?null:a.length})});
-if(out=='irr_village')grp('village').forEach(([l,a])=>{const sup=a.length<k;rows.push({l,sup,t:sup?null:IR.map(i=>{const c=a.filter(x=>x.irr==i).length;return c<k?`${i}: suppressed`:`${i} ${Math.round(c/a.length*100)}%`}).join(', '),n:sup?null:a.length})});return rows}
-function status(){const exp=[];S.requests.forEach(r=>{if(r.status=='Approved'&&S.now>r.exp){r.status='Expired';log('System','access expired',r.ds,r.purpose,'Expired',r.apv,r.id)}})}
-function release(r){const a=act_(),den=(w)=>{log(r.org,'access denied',r.ds,r.purpose,'Denied',a.v,r.id+': '+w);S.results[r.id]={err:w};toast('Denied: '+w)};status();
-if(r.status=='Revoked')return den('this access was revoked, so no further releases are allowed.');if(r.status=='Expired')return den('the approval expired on '+fmt(r.exp)+'.');if(r.status!='Approved')return den('the request is '+r.status.toLowerCase()+', so no governance approval exists.');
-if(!a.purposes.includes(r.purpose))return den('the active policy v'+a.v+' no longer permits the purpose "'+r.purpose+'".');if(r.rel>=3)return den('the query budget of 3 releases per approval is used up, which limits repeated narrow queries.');
-const rows=agg(r.out,a.k);r.rel++;S.results[r.id]={rows,out:r.out,k:a.k,ts:S.now,v:a.v};log(r.org,'data released',r.ds,r.purpose,'Allowed',a.v,`${r.id} ${OUT[r.out][0]}, ${rows.filter(x=>x.sup).length} rows suppressed`);
-if(r.rel==1){const amt=r.purpose=="Academic research"?5000:0;S.ledger.push({ts:S.now,d:amt?`Research data-use contribution from ${r.id} (simulated)`:`Crop advisory pilot for members from ${r.id} (simulated, no payment)`,a:amt})}toast('Group-level output released.')}
-function act(a,d){const adm=S.role=='admin';const need=()=>{if(!adm){toast('Only the FPO Administrator can do this in the demo.');return 1}};
-if(a=='role'){S.role=d.v;S.view='Overview'}else if(a=='nav')S.view=d.v;
-else if(a=='vote'){const v=+d.p,p=S.policies.find(x=>x.v==v);if(p.status!='proposed')return toast('Voting is closed.');if(S.votes[v][S.farmer]){log('Farmer #'+S.farmer,'vote rejected',null,null,'Denied',v,'duplicate vote attempt');toast('You already voted on v'+v+'. Duplicate votes are blocked.')}else{S.votes[v][S.farmer]=d.c;log('Farmer #'+S.farmer,'vote cast',null,null,'Recorded',v,'Choice kept private; tally only');evalP(p);toast('Vote recorded.')}}
-else if(a=='dup')act('vote',{p:d.p,c:'for'});
-else if(a=='simvotes'){if(need())return;const v=+d.p,r=rng(v*7+Object.keys(S.votes[v]).length);let n=0;for(let i=1;i<=N&&n<12;i++)if(!S.votes[v][i]&&i!=S.farmer){const x=r();S.votes[v][i]=x<.7?'for':x<.9?'against':'abstain';n++}log('Members','simulated votes',null,null,'Recorded',v,n+' demo votes added');evalP(S.policies.find(x=>x.v==v));toast(n+' simulated member votes added.')}
-else if(a=='close'){if(need())return;const p=S.policies.find(x=>x.v==+d.p);if(p.status=='proposed'){p.status='rejected';log('FPO Admin','votes closed',null,null,'Not approved',p.v,'Threshold or quorum not met')}}
-
-else if (a === 'propose') {
-  const el = id => document.getElementById(id);
-  const title = el('pt').value.trim();
-  const purposes = PUR.filter((x, i) =>
-    i < 3 && el('pp' + i).checked
-  );
-
-  if (!title || !purposes.length) {
-    return toast('Add a title and choose at least one purpose.');
-  }
-
-  const v = S.policies.reduce((max, p) => Math.max(max, p.v), 0) + 1;
-
-  const proposal = {
-    v,
-    title,
-    status: 'pending_admin',
-    submittedBy: window.kdtCurrentUser?.name || 'Demo User',
-    submittedRole: S.role,
-    purposes,
-    k: Math.max(3, +el('pk').value || 10),
-    maxDays: Math.min(365, +el('pd').value || 45),
-    thr: Math.min(1, Math.max(0.5, +el('ph').value / 100 || 0.66)),
-    quorum: 0.5,
-    at: S.now
-  };
-
-  S.policies.push(proposal);
-  S.votes[v] = {};
-
-  log(
-    window.kdtCurrentUser?.name || 'Demo User',
-    'proposal submitted for admin review',
-    null, null, 'Pending Admin Review', v, title
-  );
-
-  toast('Proposal submitted. It must be reviewed before voting.');
-}
-else if (a === 'reviewProposal') {
-  if (S.role !== 'admin') {
-    return toast('Only an authorized FPO administrator may review proposals.');
-  }
-
-  const p = S.policies.find(x => x.v === +d.p);
-  if (!p || p.status !== 'pending_admin') {
-    return toast('This proposal is no longer awaiting review.');
-  }
-
-  if (d.decision === 'approve') {
-    p.status = 'proposed';
-    p.reviewedBy = window.kdtCurrentUser?.name || 'FPO Admin';
-    p.reviewedAt = S.now;
-
-    log(
-      p.reviewedBy, 'proposal approved for voting',
-      null, null, 'Open for Voting', p.v, p.title
-    );
-
-    toast('Administrator review passed. The proposal is now open for voting.');
-  } else {
-    p.status = 'rejected';
-    p.reviewedBy = window.kdtCurrentUser?.name || 'FPO Admin';
-    p.reviewedAt = S.now;
-    p.reviewReason = 'Rejected during administrator review.';
-
-    log(
-      p.reviewedBy, 'proposal rejected at admin review',
-      null, null, 'Rejected', p.v, p.title
-    );
-
-    toast('Proposal rejected before voting.');
-  }
-}
-
-else if(a=='submit'){const el=id=>document.getElementById(id).value.trim(),out=el('ro'),days=+el('rd'),c=el('rc');if(!c.includes('@')||!(days>0)||days>365)return toast('Enter a valid contact email and a duration of 1 to 365 days.');const r={id:'R-'+(101+S.requests.length),org:S.org,purpose:el('rp'),ds:OUT[out][1],out,days,contact:c,status:'Pending',at:S.now,reason:'',rel:0};S.requests.push(r);log(S.org,'request submitted',r.ds,r.purpose,'Pending',act_().v,r.id);toast('Request '+r.id+' submitted.')}
-else if(a=='approve'||a=='reject'){if(need())return;const r=S.requests.find(x=>x.id==d.id),p=act_();let why='';if(a=='approve'){if(!p.purposes.includes(r.purpose))why=`Purpose "${r.purpose}" is not permitted by active policy v${p.v}. Members have not approved it.`;else if(r.days>p.maxDays)why=`Duration ${r.days} days exceeds the policy maximum of ${p.maxDays}.`}
-if(a=='approve'&&!why){r.status='Approved';r.apv=p.v;r.exp=S.now+r.days*D;r.reason=`Matched policy v${p.v}: "${r.purpose}" permitted, ${r.days} days, group-level output only, minimum group size ${p.k}.`;log('FPO Admin','request approved',r.ds,r.purpose,'Approved',p.v,r.id+' until '+fmt(r.exp));toast('Approved with fixed purpose and expiry.')}
-else{r.status='Rejected';r.reason=why||'Rejected by administrator.';log('FPO Admin','request rejected',r.ds,r.purpose,'Rejected',p.v,r.id+': '+r.reason);toast('Rejected: '+r.reason)}}
-else if(a=='revoke'){if(need())return;const r=S.requests.find(x=>x.id==d.id);r.status='Revoked';r.reason='Revoked by FPO. Future releases are blocked. Files already downloaded cannot be recalled.';log('FPO Admin','access revoked',r.ds,r.purpose,'Revoked',r.apv,r.id);toast('Revoked. Future releases are blocked.')}
-else if(a=='run')release(S.requests.find(x=>x.id==d.id));
-else if(a=='raw'){const r=S.requests.find(x=>x.id==d.id);log(r.org,'access denied',r.ds,r.purpose,'Denied',act_().v,r.id+': raw individual records requested');S.results[r.id]={err:'raw individual farmer records are never released through any interface.'};toast('Denied: raw records are never released.')}
-else if(a=='time'){if(need())return;S.now+=30*D;status();log('System','demo clock advanced',null,null,'Info',act_().v,'Now '+fmt(S.now))}
-else if(a=='sel')S.sel=d.v;else if(a=='leak')S.leak=!S.leak;
-else if(a=='tamper'){if(S.tamper)return;const e=S.audit[4];S.tamper={i:4,o:e.decision};e.decision='Denied';toast('Entry 4 was edited without re-hashing. Now verify the chain.')}
-else if(a=='undo'){if(S.tamper){S.audit[S.tamper.i].decision=S.tamper.o;S.tamper=null}}
-else if(a=='setk'){if(need())return;const k=+document.getElementById('sk').value;if(!(k>=3&&k<=50))return toast('Minimum group size must be between 3 and 50.');const p=act_();p.k=k;log('FPO Admin','policy setting changed',null,null,'Applied',p.v,'Minimum group size set to '+k)}
-else if(a=='reset'){try{localStorage.removeItem(KEY)}catch(e){}seed()}
-if(a=='verify')S.vr=verify();save();render()}
-function verify(){let p='genesis';for(const e of S.audit){if(e.prev!=p||rehash(e,p)!=e.hash)return e.i;p=e.hash}return -1}
-const chip=s=>`<span class="chip ${s}">${s}</span>`;
-function bar(v,m,thr){return`<div class="bar"><i style="width:${Math.min(100,v/m*100)}%"></i>${thr?`<u style="left:${thr*100}%" title="approval threshold"></u>`:''}</div>`}
-function trust(){const dec=S.requests.filter(r=>r.status!='Pending'),ex=S.requests.filter(r=>r.status=='Expired'||(r.exp&&S.now>r.exp)),pol=S.policies.filter(p=>p.status!='proposed').slice(-1)[0],t=tally(pol.v),part=Math.min(100,Math.round((t.for+t.against+t.abstain)/N*100*1.5));
-const f=[["Decisions with a recorded reason",dec.length?Math.round(dec.filter(r=>r.reason).length/dec.length*100):100],["Audit chain intact",verify()<0?100:0],["Expired access handled",ex.length?Math.round(ex.filter(r=>r.status=='Expired'||r.status=='Revoked').length/ex.length*100):100],["Member participation (latest decided policy)",part]];return{f,s:Math.round(f.reduce((a,x)=>a+x[1],0)/f.length)}}
-function vOverview(){const a=act_(),pend=S.requests.filter(r=>r.status=='Pending').length,prop=S.policies.find(p=>p.status=='proposed'),rel=S.audit.filter(e=>e.action=='data released').length,tr=trust(),mine=S.requests.filter(r=>r.org==S.org);
-let next=S.role=='farmer'?(prop&&!S.votes[prop.v][S.farmer]?`<b>Your vote is needed</b> on proposal v${prop.v}: ${esc(prop.title)}. <button class="b" data-a="nav" data-v="Governance and Voting">Review and vote</button>`:'You are up to date. See who asked for the group\'s data under Access Requests.'):S.role=='admin'?`<b>${pend} request(s) waiting for review.</b> <button class="b" data-a="nav" data-v="Access Requests">Open requests</button>`:`<b>Your requests:</b> ${mine.map(r=>r.id+' '+chip(r.status)).join(' ')||'none yet'}`;
-return`<div class="card"><h1>Farmers decide who uses the group's data.</h1><p>Khet Data Trust is a prototype of community-led data governance. A Farmer Producer Organisation (FPO) holds its members' data. Members vote on the rules. Outsiders get only group-level summaries, and every decision is logged.</p>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+        <title>Khet Data Trust</title>
+        <link href="https://fonts.googleapis.com/css2?family=Literata:wght@500;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --bg: #f6f1e4;
+                --card: #fffdf7;
+                --ink: #1f2a24;
+                --mut: #55606a;
+                --line: #ddd5bf;
+                --g: #1d3b2a;
+                --g2: #2f5a40;
+                --gold: #9a7316;
+                --goldbg: #f1e3b8;
+                --ok: #1f6b3a;
+                --bad: #9b2c2c;
+                --sl: #3a4752;
+                box-sizing: border-box;
+                padding-top: env(safe-area-inset-top,0px);
+                padding-bottom: env(safe-area-inset-bottom,0px)
+            }
+
+            @media (prefers-color-scheme: dark) {
+                :root:not([data-theme=light]) {
+                    --bg:#131d17;
+                    --card: #1b2a21;
+                    --ink: #efe9d8;
+                    --mut: #b4bdb5;
+                    --line: #34473b;
+                    --g: #8fcba3;
+                    --g2: #6db589;
+                    --gold: #e0b657;
+                    --goldbg: #3b3319;
+                    --ok: #7fd69b;
+                    --bad: #f09a9a;
+                    --sl: #b9c4cf
+                }
+            }
+
+            * {
+                box-sizing: border-box
+            }
+
+            html,body {
+                margin: 0
+            }
+
+            body {
+                background: var(--bg);
+                color: var(--ink);
+                font: 15px/1.55 'Public Sans',system-ui,sans-serif
+            }
+
+            h1,h2,h3 {
+                font-family: Literata,Georgia,serif;
+                margin: 0 0 .5rem;
+                line-height: 1.2
+            }
+
+            h1 {
+                font-size: 1.9rem
+            }
+
+            h2 {
+                font-size: 1.3rem
+            }
+
+            h3 {
+                font-size: 1.05rem
+            }
+
+            .demo {
+                background: var(--gold);
+                color: #fff;
+                padding: .35rem 1rem;
+                font-size: .82rem;
+                text-align: center
+            }
+
+            .shell {
+                display: grid;
+                grid-template-columns: 230px 1fr;
+                min-height: 100vh
+            }
+
+            nav {
+                background: var(--g);
+                padding: 1rem .6rem;
+                position: sticky;
+                top: 0;
+                align-self: start;
+                height: 100vh
+            }
+
+            @media (prefers-color-scheme: dark) {
+                :root:not([data-theme=light]) nav {
+                    background:#0d1511
+                }
+            }
+
+            nav b {
+                display: block;
+                color: #f6f1e4;
+                font: 700 1.15rem Literata,serif;
+                padding: .2rem .6rem 1rem
+            }
+
+            nav button {
+                display: block;
+                width: 100%;
+                text-align: left;
+                background: none;
+                border: 0;
+                color: #dfe8dc;
+                padding: .55rem .7rem;
+                border-radius: 6px;
+                font: inherit;
+                cursor: pointer
+            }
+
+            nav button[aria-current=page] {
+                background: #f6f1e4;
+                color: #1d3b2a;
+                font-weight: 600
+            }
+
+            nav button:hover {
+                background: #2f5a40;
+                color: #fff
+            }
+
+            main {
+                padding: 1.2rem 1.5rem 3rem;
+                max-width: 1100px;
+                width: 100%
+            }
+
+            .top {
+                display: flex;
+                gap: .8rem;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 1rem
+            }
+
+            .card {
+                background: var(--card);
+                border: 1px solid var(--line);
+                border-radius: 10px;
+                padding: 1rem 1.1rem;
+                margin-bottom: 1rem
+            }
+
+            .grid {
+                display: grid;
+                gap: 1rem;
+                grid-template-columns: repeat(auto-fit,minmax(200px,1fr))
+            }
+
+            .grid .card {
+                margin: 0
+            }
+
+            .big {
+                font: 700 1.8rem Literata,serif;
+                color: var(--g)
+            }
+
+            .mut {
+                color: var(--mut);
+                font-size: .88rem
+            }
+
+            button.b,select,input,textarea {
+                font: inherit;
+                border-radius: 6px;
+                border: 1px solid var(--line);
+                padding: .45rem .7rem;
+                background: var(--card);
+                color: var(--ink)
+            }
+
+            button.b {
+                cursor: pointer;
+                background: var(--g);
+                color: #fff;
+                border-color: var(--g)
+            }
+
+            @media (prefers-color-scheme: dark) {
+                :root:not([data-theme=light]) button.b {
+                    color:#0d1511
+                }
+            }
+
+            button.b.o {
+                background: none;
+                color: var(--g)
+            }
+
+            button.b.logout-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: .4rem;
+                min-height: 40px;
+                min-width: 104px;
+                padding: .55rem .9rem;
+                background: #9b2c2c!important;
+                border: 1px solid #9b2c2c!important;
+                color: #fff!important;
+                font-weight: 600;
+                white-space: nowrap
+            }
+
+            button.b.logout-btn:hover {
+                background: #7f1d1d!important;
+                border-color: #7f1d1d!important
+            }
+
+            button.b.d {
+                background: var(--bad);
+                border-color: var(--bad);
+                color: #fff
+            }
+
+            button.b:disabled {
+                opacity: .45;
+                cursor: not-allowed
+            }
+
+            :focus-visible {
+                outline: 3px solid var(--gold);
+                outline-offset: 2px
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: .9rem
+            }
+
+            th,td {
+                text-align: left;
+                padding: .5rem .5rem;
+                border-bottom: 1px solid var(--line);
+                vertical-align: top
+            }
+
+            th {
+                color: var(--mut);
+                font-weight: 600
+            }
+
+            .wrap {
+                overflow-x: auto
+            }
+
+            .chip {
+                display: inline-block;
+                padding: .1rem .55rem;
+                border-radius: 99px;
+                font-size: .78rem;
+                font-weight: 600;
+                background: var(--line);
+                color: var(--ink)
+            }
+
+            .Pending,.proposed {
+                background: var(--goldbg);
+                color: var(--gold)
+            }
+
+            .Approved,.active {
+                background: #d4ecd9;
+                color: #1f6b3a
+            }
+
+            .Rejected,.Revoked {
+                background: #f3d3d3;
+                color: #9b2c2c
+            }
+
+            .Expired,.superseded {
+                background: #dde3e8;
+                color: #3a4752
+            }
+
+            @media (prefers-color-scheme: dark) {
+                :root:not([data-theme=light]) .Approved,.active {
+                    background:#1f3d2a;
+                    color: #7fd69b
+                }
+
+                .Rejected,.Revoked {
+                    background: #4a2323;
+                    color: #f09a9a
+                }
+            }
+
+            .bar {
+                background: var(--line);
+                border-radius: 4px;
+                height: 9px;
+                position: relative;
+                min-width: 80px
+            }
+
+            .bar i {
+                display: block;
+                height: 100%;
+                background: var(--g2);
+                border-radius: 4px
+            }
+
+            .bar u {
+                position: absolute;
+                top: -3px;
+                bottom: -3px;
+                width: 2px;
+                background: var(--gold)
+            }
+
+            .row {
+                display: flex;
+                gap: .6rem;
+                flex-wrap: wrap;
+                align-items: center
+            }
+
+            .f {
+                display: grid;
+                gap: .6rem;
+                grid-template-columns: repeat(auto-fit,minmax(220px,1fr))
+            }
+
+            .f label {
+                display: grid;
+                gap: .2rem;
+                font-size: .85rem;
+                color: var(--mut)
+            }
+
+            .tl {
+                border-left: 3px solid var(--g2);
+                margin-left: .5rem;
+                padding-left: 1rem
+            }
+
+            .tl div {
+                margin-bottom: .7rem;
+                position: relative
+            }
+
+            .tl div:before {
+                content: "";
+                position: absolute;
+                left: -1.5rem;
+                top: .35rem;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: var(--gold)
+            }
+
+            .note {
+                border-left: 4px solid var(--gold);
+                background: var(--goldbg);
+                padding: .6rem .8rem;
+                border-radius: 0 6px 6px 0;
+                font-size: .88rem;
+                margin: .6rem 0;
+                color: var(--ink)
+            }
+
+            .steps {
+                display: grid;
+                gap: .8rem;
+                grid-template-columns: repeat(auto-fit,minmax(230px,1fr));
+                margin: 1rem 0
+            }
+
+            .steps div {
+                border-top: 3px solid var(--gold);
+                padding-top: .5rem
+            }
+
+            .hash {
+                font-family: ui-monospace,monospace;
+                font-size: .75rem
+            }
+
+            .bad {
+                color: var(--bad);
+                font-weight: 600
+            }
+
+            .ok {
+                color: var(--ok);
+                font-weight: 600
+            }
+
+            #toast {
+                position: fixed;
+                bottom: 1rem;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--g);
+                color: #fff;
+                padding: .6rem 1rem;
+                border-radius: 8px;
+                max-width: 90%;
+                z-index: 9
+            }
+
+            @media (prefers-color-scheme: dark) {
+                :root:not([data-theme=light]) #toast {
+                    color:#0d1511
+                }
+            }
+
+            @media (max-width: 760px) {
+                .shell {
+                    display:block
+                }
+
+                nav {
+                    position: static;
+                    height: auto;
+                    display: flex;
+                    overflow-x: auto;
+                    gap: .2rem;
+                    padding: .5rem
+                }
+
+                nav b {
+                    display: none
+                }
+
+                nav button {
+                    white-space: nowrap;
+                    width: auto
+                }
+
+                main {
+                    padding: 1rem
+                }
+            }
+
+            @media (prefers-reduced-motion:no-preference) {
+                .card {
+                    animation: in .25s ease
+                }
+
+                @keyframes in {
+                    from {
+                        opacity: .4
+                    }
+
+                    to {
+                        opacity: 1
+                    }
+                }
+            }
+
+            .login-wrap {
+                min-height: calc(100vh - 34px);
+                display: grid;
+                place-items: center;
+                padding: 1.5rem
+            }
+
+            .login-card {
+                width: min(100%,440px);
+                background: var(--card);
+                border: 1px solid var(--line);
+                border-radius: 14px;
+                padding: 2rem;
+                box-shadow: 0 12px 35px #00000012
+            }
+
+            .login-card .brand {
+                font: 700 1.5rem Literata,Georgia,serif;
+                color: var(--g);
+                margin-bottom: .5rem
+            }
+
+            .login-card form {
+                display: grid;
+                gap: 1rem;
+                margin-top: 1.2rem
+            }
+
+            .login-card label {
+                display: grid;
+                gap: .35rem;
+                font-size: .9rem
+            }
+
+            .login-card input,.login-card select {
+                width: 100%;
+                padding: .7rem
+            }
+
+            .login-note {
+                font-size: .82rem;
+                color: var(--mut);
+                margin-top: 1rem
+            }
+
+            #login-error {
+                color: var(--bad);
+                font-size: .88rem
+            }
+
+            [hidden] {
+                display: none!important
+            }
+        </style>
+    </head>
+    <body>
+        <div class="demo">Demo mode: synthetic data only. All checks run in this browser and are not production security.</div>
+        <div id="login-root" class="login-wrap" hidden></div>
+        <div class="shell" id="dashboard-shell">
+            <nav id="nav" aria-label="Main"></nav>
+            <main id="app"></main>
+        </div>
+        <div id="toast" hidden role="status"></div>
+        <script>
+            const D = 864e5
+              , T0 = Date.UTC(2026, 9, 29, 9, 0)
+              , N = 120
+              , KEY = 'khet-v1';
+            const PUR = ["Academic research", "Government planning", "Commercial product", "Data resale"];
+            const OUT = {
+                yield_crop: ["Average yield by crop", "ds1"],
+                yield_village: ["Average yield by village", "ds1"],
+                crop_dist: ["Crop distribution", "ds1"],
+                irr_village: ["Irrigation mix by village", "ds3"]
+            };
+            const DS = [["ds1", "Crop pattern and yield", "Individual records (120)", "Medium", "Kharif and Rabi 2025-26"], ["ds2", "Soil measurements", "Individual records (120)", "High", "Rabi 2025-26"], ["ds3", "Irrigation usage", "Individual records (120)", "Medium", "2025-26"], ["ds4", "Market price trends", "Group-level summary", "Low", "Apr to Sep 2026"]];
+            const ORGS = ["Terai Agri Research Institute (demo)", "UP Agriculture Dept. Planning Cell (demo)", "AgriMart Inputs Pvt Ltd (demo)"];
+            const NAV = {
+                admin: ["Overview", "Farmer Data Registry", "Governance and Voting", "Access Requests", "Privacy Analytics", "Audit Trail", "Benefits and Transparency", "Settings"],
+                farmer: ["Overview", "Farmer Data Registry", "Governance and Voting", "Access Requests", "Privacy Analytics", "Audit Trail", "Benefits and Transparency"],
+                requester: ["Overview", "Access Requests", "Benefits and Transparency"]
+            };
+            function rng(s) {
+                return () => {
+                    s |= 0;
+                    s = s + 0x6D2B79F5 | 0;
+                    let t = Math.imul(s ^ s >>> 15, 1 | s);
+                    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+                    return ((t ^ t >>> 14) >>> 0) / 4294967296
+                }
+            }
+            const VIL = [["Rampur", 34], ["Salempur", 28], ["Chiraiya", 26], ["Belghat", 19], ["Nautanwa", 9], ["Pipraich", 4]]
+              , CR = [["Wheat", 18], ["Rice", 20], ["Sugarcane", 300], ["Maize", 22], ["Mustard", 7]]
+              , IR = ["Tubewell", "Canal", "Rain-fed"];
+            const F = ( () => {
+                const r = rng(42)
+                  , a = [];
+                let id = 1;
+                VIL.forEach( ([v,n]) => {
+                    for (let i = 0; i < n; i++) {
+                        const c = CR[Math.floor(r() ** 1.3 * 5)];
+                        a.push({
+                            id: id++,
+                            village: v,
+                            crop: c[0],
+                            yield: +(c[1] * (0.8 + r() * .4)).toFixed(1),
+                            irr: IR[Math.floor(r() * 3)],
+                            ph: +(5.8 + r() * 1.8).toFixed(1)
+                        })
+                    }
+                }
+                );
+                return a
+            }
+            )();
+            const esc = s => String(s).replace(/[&<>"']/g, c => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#39;'
+            }[c]));
+            function hs(s) {
+                let h1 = 0xdeadbeef
+                  , h2 = 0x41c6ce57;
+                for (let i = 0; i < s.length; i++) {
+                    const c = s.charCodeAt(i);
+                    h1 = Math.imul(h1 ^ c, 2654435761);
+                    h2 = Math.imul(h2 ^ c, 1597334677)
+                }
+                h1 = Math.imul(h1 ^ h1 >>> 16, 2246822507) ^ Math.imul(h2 ^ h2 >>> 13, 3266489909);
+                h2 = Math.imul(h2 ^ h2 >>> 16, 2246822507) ^ Math.imul(h1 ^ h1 >>> 13, 3266489909);
+                return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(16).padStart(14, '0')
+            }
+            let S;
+            function log(actor, action, ds, purpose, decision, pv, detail, ts) {
+                const p = S.audit.length ? S.audit[S.audit.length - 1].hash : 'genesis';
+                const e = {
+                    i: S.audit.length,
+                    ts: ts || S.now,
+                    actor,
+                    action,
+                    ds: ds || '-',
+                    purpose: purpose || '-',
+                    decision: decision || '-',
+                    pv: pv || '-',
+                    detail: detail || '',
+                    prev: p
+                };
+                e.hash = hs(p + JSON.stringify([e.i, e.ts, actor, e.action, e.ds, e.purpose, e.decision, e.pv, e.detail]));
+                S.audit.push(e)
+            }
+            const rehash = (e, p) => hs(p + JSON.stringify([e.i, e.ts, e.actor, e.action, e.ds, e.purpose, e.decision, e.pv, e.detail]));
+            function seed() {
+                S = {
+                    role: 'admin',
+                    view: 'Overview',
+                    now: T0,
+                    org: ORGS[0],
+                    farmer: 7,
+                    audit: [],
+                    results: {},
+                    leak: false,
+                    sel: 'ds1',
+                    tamper: null,
+                    policies: [{
+                        v: 1,
+                        title: "Baseline research sharing",
+                        status: 'active',
+                        purposes: ["Academic research"],
+                        k: 10,
+                        maxDays: 45,
+                        thr: .66,
+                        quorum: .5,
+                        at: T0 - 120 * D
+                    }, {
+                        v: 2,
+                        title: "Add government planning use",
+                        status: 'proposed',
+                        purposes: ["Academic research", "Government planning"],
+                        k: 10,
+                        maxDays: 45,
+                        thr: .66,
+                        quorum: .5,
+                        at: T0 - 14 * D
+                    }],
+                    votes: {
+                        1: {},
+                        2: {}
+                    },
+                    requests: [],
+                    ledger: []
+                };
+                for (let i = 1; i <= 100; i++)
+                    S.votes[1][i] = i % 10 == 0 ? 'against' : i % 17 == 0 ? 'abstain' : 'for';
+                for (let i = 20; i <= 77; i++)
+                    S.votes[2][i] = i <= 60 ? 'for' : i <= 72 ? 'against' : 'abstain';
+                const A = 'FPO Admin';
+                log(A, 'policy proposed', null, null, 'Open for voting', 1, 'Baseline research sharing', T0 - 120 * D);
+                log('Members', 'votes closed', null, null, 'Approved', 1, 'Quorum met, approval above 66%', T0 - 110 * D);
+                log(A, 'policy activated', null, null, 'Active', 1, '', T0 - 110 * D);
+                S.requests = [{
+                    id: 'R-101',
+                    org: ORGS[0],
+                    purpose: "Academic research",
+                    ds: 'ds1',
+                    out: 'yield_crop',
+                    days: 30,
+                    contact: 'research@terai-demo.example',
+                    status: 'Expired',
+                    at: T0 - 90 * D,
+                    apv: 1,
+                    exp: T0 - 60 * D,
+                    reason: 'Matched policy v1: academic research, 30 days.',
+                    rel: 1
+                }, {
+                    id: 'R-102',
+                    org: ORGS[0],
+                    purpose: "Academic research",
+                    ds: 'ds1',
+                    out: 'yield_crop',
+                    days: 30,
+                    contact: 'research@terai-demo.example',
+                    status: 'Pending',
+                    at: T0 - 2 * D,
+                    reason: '',
+                    rel: 0
+                }, {
+                    id: 'R-103',
+                    org: ORGS[2],
+                    purpose: "Commercial product",
+                    ds: 'ds1',
+                    out: 'crop_dist',
+                    days: 90,
+                    contact: 'data@agrimart-demo.example',
+                    status: 'Pending',
+                    at: T0 - D,
+                    reason: '',
+                    rel: 0
+                }];
+                log(ORGS[0], 'request submitted', 'ds1', "Academic research", 'Pending', 1, 'R-101', T0 - 90 * D);
+                log(A, 'request approved', 'ds1', "Academic research", 'Approved', 1, 'R-101 for 30 days', T0 - 90 * D);
+                log(ORGS[0], 'data released', 'ds1', "Academic research", 'Allowed', 1, 'R-101 average yield by crop', T0 - 89 * D);
+                log('System', 'access expired', 'ds1', "Academic research", 'Expired', 1, 'R-101', T0 - 60 * D);
+                log(A, 'policy proposed', null, null, 'Open for voting', 2, 'Add government planning use', T0 - 14 * D);
+                log(ORGS[0], 'request submitted', 'ds1', "Academic research", 'Pending', 1, 'R-102', T0 - 2 * D);
+                log(ORGS[2], 'request submitted', 'ds1', "Commercial product", 'Pending', 1, 'R-103', T0 - D);
+                S.ledger = [{
+                    ts: T0 - 89 * D,
+                    d: 'Research data-use contribution from R-101 (simulated)',
+                    a: 5000
+                }, {
+                    ts: T0 - 70 * D,
+                    d: 'Soil-testing camp for members (simulated)',
+                    a: -3500
+                }]
+            }
+            function load() {
+                try {
+                    const j = localStorage.getItem(KEY);
+                    if (j) {
+                        S = JSON.parse(j);
+                        return
+                    }
+                } catch (e) {}
+                seed()
+            }
+            function save() {
+                try {
+                    localStorage.setItem(KEY, JSON.stringify(S))
+                } catch (e) {}
+            }
+            const act_ = () => S.policies.find(p => p.status == 'active')
+              , fmt = t => new Date(t).toISOString().slice(0, 10)
+              , tally = v => {
+                const o = {
+                    for: 0,
+                    against: 0,
+                    abstain: 0
+                };
+                Object.values(S.votes[v]).forEach(x => o[x]++);
+                return o
+            }
+            ;
+            function toast(m) {
+                const t = document.getElementById('toast');
+                t.textContent = m;
+                t.hidden = false;
+                clearTimeout(toast.t);
+                toast.t = setTimeout( () => t.hidden = true, 3500)
+            }
+            function evalP(p) {
+                if (p.status != 'proposed')
+                    return;
+                const t = tally(p.v)
+                  , cast = t.for + t.against + t.abstain;
+                if (cast >= Math.ceil(p.quorum * N) && t.for + t.against > 0 && t.for / (t.for + t.against) >= p.thr) {
+                    const o = act_();
+                    if (o)
+                        o.status = 'superseded';
+                    p.status = 'active';
+                    log('Members', 'votes closed', null, null, 'Approved', p.v, `${t.for} for, ${t.against} against, ${t.abstain} abstain`);
+                    log('System', 'policy activated', null, null, 'Active', p.v, p.title)
+                }
+            }
+            function agg(out, k) {
+                const rows = [];
+                const grp = (key, list) => {
+                    const m = {};
+                    F.forEach(f => (m[f[key]] = m[f[key]] || []).push(f));
+                    return Object.entries(m).filter( ([a]) => !list || list.includes(a))
+                }
+                ;
+                if (out == 'yield_crop' || out == 'yield_village')
+                    grp(out == 'yield_crop' ? 'crop' : 'village').forEach( ([l,a]) => {
+                        const sup = a.length < k;
+                        rows.push({
+                            l,
+                            sup,
+                            v: sup ? null : +(a.reduce( (s, x) => s + x.yield, 0) / a.length).toFixed(1),
+                            u: 'q/acre',
+                            n: sup ? null : a.length
+                        })
+                    }
+                    );
+                if (out == 'crop_dist')
+                    grp('crop').forEach( ([l,a]) => {
+                        const sup = a.length < k;
+                        rows.push({
+                            l,
+                            sup,
+                            v: sup ? null : +(a.length / N * 100).toFixed(1),
+                            u: '% of members',
+                            n: sup ? null : a.length
+                        })
+                    }
+                    );
+                if (out == 'irr_village')
+                    grp('village').forEach( ([l,a]) => {
+                        const sup = a.length < k;
+                        rows.push({
+                            l,
+                            sup,
+                            t: sup ? null : IR.map(i => {
+                                const c = a.filter(x => x.irr == i).length;
+                                return c < k ? `${i}: suppressed` : `${i} ${Math.round(c / a.length * 100)}%`
+                            }
+                            ).join(', '),
+                            n: sup ? null : a.length
+                        })
+                    }
+                    );
+                return rows
+            }
+            function status() {
+                const exp = [];
+                S.requests.forEach(r => {
+                    if (r.status == 'Approved' && S.now > r.exp) {
+                        r.status = 'Expired';
+                        log('System', 'access expired', r.ds, r.purpose, 'Expired', r.apv, r.id)
+                    }
+                }
+                )
+            }
+            function release(r) {
+                const a = act_()
+                  , den = (w) => {
+                    log(r.org, 'access denied', r.ds, r.purpose, 'Denied', a.v, r.id + ': ' + w);
+                    S.results[r.id] = {
+                        err: w
+                    };
+                    toast('Denied: ' + w)
+                }
+                ;
+                status();
+                if (r.status == 'Revoked')
+                    return den('this access was revoked, so no further releases are allowed.');
+                if (r.status == 'Expired')
+                    return den('the approval expired on ' + fmt(r.exp) + '.');
+                if (r.status != 'Approved')
+                    return den('the request is ' + r.status.toLowerCase() + ', so no governance approval exists.');
+                if (!a.purposes.includes(r.purpose))
+                    return den('the active policy v' + a.v + ' no longer permits the purpose "' + r.purpose + '".');
+                if (r.rel >= 3)
+                    return den('the query budget of 3 releases per approval is used up, which limits repeated narrow queries.');
+                const rows = agg(r.out, a.k);
+                r.rel++;
+                S.results[r.id] = {
+                    rows,
+                    out: r.out,
+                    k: a.k,
+                    ts: S.now,
+                    v: a.v
+                };
+                log(r.org, 'data released', r.ds, r.purpose, 'Allowed', a.v, `${r.id} ${OUT[r.out][0]}, ${rows.filter(x => x.sup).length} rows suppressed`);
+                if (r.rel == 1) {
+                    const amt = r.purpose == "Academic research" ? 5000 : 0;
+                    S.ledger.push({
+                        ts: S.now,
+                        d: amt ? `Research data-use contribution from ${r.id} (simulated)` : `Crop advisory pilot for members from ${r.id} (simulated, no payment)`,
+                        a: amt
+                    })
+                }
+                toast('Group-level output released.')
+            }
+            function act(a, d) {
+                const adm = S.role == 'admin';
+                const need = () => {
+                    if (!adm) {
+                        toast('Only the FPO Administrator can do this in the demo.');
+                        return 1
+                    }
+                }
+                ;
+                if (a == 'logout') {
+                    sessionStorage.removeItem('khet-demo-session');
+                    S.view = 'Overview';
+                    render();
+                    return
+                } else if (a == 'nav')
+                    S.view = d.v;
+                else if (a == 'vote') {
+                    const v = +d.p
+                      , p = S.policies.find(x => x.v == v);
+                    if (p.status != 'proposed')
+                        return toast('Voting is closed.');
+                    if (S.votes[v][S.farmer]) {
+                        log('Farmer #' + S.farmer, 'vote rejected', null, null, 'Denied', v, 'duplicate vote attempt');
+                        toast('You already voted on v' + v + '. Duplicate votes are blocked.')
+                    } else {
+                        S.votes[v][S.farmer] = d.c;
+                        log('Farmer #' + S.farmer, 'vote cast', null, null, 'Recorded', v, 'Choice kept private; tally only');
+                        evalP(p);
+                        toast('Vote recorded.')
+                    }
+                } else if (a == 'dup')
+                    act('vote', {
+                        p: d.p,
+                        c: 'for'
+                    });
+                else if (a == 'simvotes') {
+                    if (need())
+                        return;
+                    const v = +d.p
+                      , r = rng(v * 7 + Object.keys(S.votes[v]).length);
+                    let n = 0;
+                    for (let i = 1; i <= N && n < 12; i++)
+                        if (!S.votes[v][i] && i != S.farmer) {
+                            const x = r();
+                            S.votes[v][i] = x < .7 ? 'for' : x < .9 ? 'against' : 'abstain';
+                            n++
+                        }
+                    log('Members', 'simulated votes', null, null, 'Recorded', v, n + ' demo votes added');
+                    evalP(S.policies.find(x => x.v == v));
+                    toast(n + ' simulated member votes added.')
+                } else if (a == 'close') {
+                    if (need())
+                        return;
+                    const p = S.policies.find(x => x.v == +d.p);
+                    if (p.status == 'proposed') {
+                        p.status = 'rejected';
+                        log('FPO Admin', 'votes closed', null, null, 'Not approved', p.v, 'Threshold or quorum not met')
+                    }
+                } else if (a == 'propose') {
+                    if (need())
+                        return;
+                    const el = id => document.getElementById(id)
+                      , pu = PUR.filter( (x, i) => i < 3 && el('pp' + i).checked);
+                    const t = el('pt').value.trim();
+                    if (!t || !pu.length)
+                        return toast('Add a title and choose at least one purpose.');
+                    const v = S.policies.length + 1
+                      , p = {
+                        v,
+                        title: t,
+                        status: 'proposed',
+                        purposes: pu,
+                        k: Math.max(3, +el('pk').value || 10),
+                        maxDays: Math.min(365, +el('pd').value || 45),
+                        thr: Math.min(1, Math.max(.5, +el('ph').value / 100 || .66)),
+                        quorum: .5,
+                        at: S.now
+                    };
+                    S.policies.push(p);
+                    S.votes[v] = {};
+                    log('FPO Admin', 'policy proposed', null, null, 'Open for voting', v, t);
+                    toast('Proposal published for member voting.')
+                } else if (a == 'submit') {
+                    const el = id => document.getElementById(id).value.trim()
+                      , out = el('ro')
+                      , days = +el('rd')
+                      , c = el('rc');
+                    if (!c.includes('@') || !(days > 0) || days > 365)
+                        return toast('Enter a valid contact email and a duration of 1 to 365 days.');
+                    const r = {
+                        id: 'R-' + (101 + S.requests.length),
+                        org: S.org,
+                        purpose: el('rp'),
+                        ds: OUT[out][1],
+                        out,
+                        days,
+                        contact: c,
+                        status: 'Pending',
+                        at: S.now,
+                        reason: '',
+                        rel: 0
+                    };
+                    S.requests.push(r);
+                    log(S.org, 'request submitted', r.ds, r.purpose, 'Pending', act_().v, r.id);
+                    toast('Request ' + r.id + ' submitted.')
+                } else if (a == 'approve' || a == 'reject') {
+                    if (need())
+                        return;
+                    const r = S.requests.find(x => x.id == d.id)
+                      , p = act_();
+                    let why = '';
+                    if (a == 'approve') {
+                        if (!p.purposes.includes(r.purpose))
+                            why = `Purpose "${r.purpose}" is not permitted by active policy v${p.v}. Members have not approved it.`;
+                        else if (r.days > p.maxDays)
+                            why = `Duration ${r.days} days exceeds the policy maximum of ${p.maxDays}.`
+                    }
+                    if (a == 'approve' && !why) {
+                        r.status = 'Approved';
+                        r.apv = p.v;
+                        r.exp = S.now + r.days * D;
+                        r.reason = `Matched policy v${p.v}: "${r.purpose}" permitted, ${r.days} days, group-level output only, minimum group size ${p.k}.`;
+                        log('FPO Admin', 'request approved', r.ds, r.purpose, 'Approved', p.v, r.id + ' until ' + fmt(r.exp));
+                        toast('Approved with fixed purpose and expiry.')
+                    } else {
+                        r.status = 'Rejected';
+                        r.reason = why || 'Rejected by administrator.';
+                        log('FPO Admin', 'request rejected', r.ds, r.purpose, 'Rejected', p.v, r.id + ': ' + r.reason);
+                        toast('Rejected: ' + r.reason)
+                    }
+                } else if (a == 'revoke') {
+                    if (need())
+                        return;
+                    const r = S.requests.find(x => x.id == d.id);
+                    r.status = 'Revoked';
+                    r.reason = 'Revoked by FPO. Future releases are blocked. Files already downloaded cannot be recalled.';
+                    log('FPO Admin', 'access revoked', r.ds, r.purpose, 'Revoked', r.apv, r.id);
+                    toast('Revoked. Future releases are blocked.')
+                } else if (a == 'run')
+                    release(S.requests.find(x => x.id == d.id));
+                else if (a == 'raw') {
+                    const r = S.requests.find(x => x.id == d.id);
+                    log(r.org, 'access denied', r.ds, r.purpose, 'Denied', act_().v, r.id + ': raw individual records requested');
+                    S.results[r.id] = {
+                        err: 'raw individual farmer records are never released through any interface.'
+                    };
+                    toast('Denied: raw records are never released.')
+                } else if (a == 'time') {
+                    if (need())
+                        return;
+                    S.now += 30 * D;
+                    status();
+                    log('System', 'demo clock advanced', null, null, 'Info', act_().v, 'Now ' + fmt(S.now))
+                } else if (a == 'sel')
+                    S.sel = d.v;
+                else if (a == 'leak')
+                    S.leak = !S.leak;
+                else if (a == 'tamper') {
+                    if (S.tamper)
+                        return;
+                    const e = S.audit[4];
+                    S.tamper = {
+                        i: 4,
+                        o: e.decision
+                    };
+                    e.decision = 'Denied';
+                    toast('Entry 4 was edited without re-hashing. Now verify the chain.')
+                } else if (a == 'undo') {
+                    if (S.tamper) {
+                        S.audit[S.tamper.i].decision = S.tamper.o;
+                        S.tamper = null
+                    }
+                } else if (a == 'setk') {
+                    if (need())
+                        return;
+                    const k = +document.getElementById('sk').value;
+                    if (!(k >= 3 && k <= 50))
+                        return toast('Minimum group size must be between 3 and 50.');
+                    const p = act_();
+                    p.k = k;
+                    log('FPO Admin', 'policy setting changed', null, null, 'Applied', p.v, 'Minimum group size set to ' + k)
+                } else if (a == 'reset') {
+                    try {
+                        localStorage.removeItem(KEY)
+                    } catch (e) {}
+                    seed()
+                }
+                if (a == 'verify')
+                    S.vr = verify();
+                save();
+                render()
+            }
+            function verify() {
+                let p = 'genesis';
+                for (const e of S.audit) {
+                    if (e.prev != p || rehash(e, p) != e.hash)
+                        return e.i;
+                    p = e.hash
+                }
+                return -1
+            }
+            const chip = s => `<span class="chip ${s}">${s}</span>`;
+            function bar(v, m, thr) {
+                return `<div class="bar"><i style="width:${Math.min(100, v / m * 100)}%"></i>${thr ? `<u style="left:${thr * 100}%" title="approval threshold"></u>` : ''}</div>`
+            }
+            function trust() {
+                const dec = S.requests.filter(r => r.status != 'Pending')
+                  , ex = S.requests.filter(r => r.status == 'Expired' || (r.exp && S.now > r.exp))
+                  , pol = S.policies.filter(p => p.status != 'proposed').slice(-1)[0]
+                  , t = tally(pol.v)
+                  , part = Math.min(100, Math.round((t.for + t.against + t.abstain) / N * 100 * 1.5));
+                const f = [["Decisions with a recorded reason", dec.length ? Math.round(dec.filter(r => r.reason).length / dec.length * 100) : 100], ["Audit chain intact", verify() < 0 ? 100 : 0], ["Expired access handled", ex.length ? Math.round(ex.filter(r => r.status == 'Expired' || r.status == 'Revoked').length / ex.length * 100) : 100], ["Member participation (latest decided policy)", part]];
+                return {
+                    f,
+                    s: Math.round(f.reduce( (a, x) => a + x[1], 0) / f.length)
+                }
+            }
+            function vOverview() {
+                const a = act_()
+                  , pend = S.requests.filter(r => r.status == 'Pending').length
+                  , prop = S.policies.find(p => p.status == 'proposed')
+                  , rel = S.audit.filter(e => e.action == 'data released').length
+                  , tr = trust()
+                  , mine = S.requests.filter(r => r.org == S.org);
+                let next = S.role == 'farmer' ? (prop && !S.votes[prop.v][S.farmer] ? `<b>Your vote is needed</b> on proposal v${prop.v}: ${esc(prop.title)}. <button class="b" data-a="nav" data-v="Governance and Voting">Review and vote</button>` : 'You are up to date. See who asked for the group\'s data under Access Requests.') : S.role == 'admin' ? `<b>${pend} request(s) waiting for review.</b> <button class="b" data-a="nav" data-v="Access Requests">Open requests</button>` : `<b>Your requests:</b> ${mine.map(r => r.id + ' ' + chip(r.status)).join(' ') || 'none yet'}`;
+                return `<div class="card"><h1>Farmers decide who uses the group's data.</h1><p>Khet Data Trust is a prototype of community-led data governance. A Farmer Producer Organisation (FPO) holds its members' data. Members vote on the rules. Outsiders get only group-level summaries, and every decision is logged.</p>
 <div class="steps"><div><b>1. Members vote</b><br><span class="mut">Sharing rules become active only after the quorum and approval threshold are met.</span></div><div><b>2. FPO checks each request</b><br><span class="mut">Purpose, output and duration must fit the active policy, or the request is denied with a reason.</span></div><div><b>3. Only summaries leave</b><br><span class="mut">Small groups are suppressed, raw farmer records are never released, and the hash-chained log records everything.</span></div></div>
 <p class="mut">This is a prototype, not a claim that FPOs already hold a legal trustee role.</p></div>
 <div class="grid"><div class="card"><div class="big">${N}</div>synthetic member farmers</div><div class="card"><div class="big">v${a.v}</div>active policy, min group size ${a.k}</div><div class="card"><div class="big">${pend}</div>pending requests</div><div class="card"><div class="big">${rel}</div>group-level releases logged</div></div>
 <div class="card" style="margin-top:1rem">${next}</div>
-<div class="grid"><div class="card"><h3>Governance health: ${tr.s}/100</h3><p class="mut">Explainable heuristic from four factors. It is not a scientifically validated trust score.</p>${tr.f.map(x=>`<div class="mut">${x[0]}: ${x[1]}</div>${bar(x[1],100)}`).join('<br>')}</div>
-<div class="card"><h3>Recent activity</h3>${S.audit.slice(-6).reverse().map(e=>`<div class="mut">${fmt(e.ts)} · ${esc(e.actor)} · <b>${esc(e.action)}</b></div>`).join('')}</div></div>`}
-function vRegistry(){const a=act_(),d=DS.find(x=>x[0]==S.sel),hist=S.audit.filter(e=>e.ds==d[0]),rel=d[0]=='ds1'||d[0]=='ds3';
-return`<h2>Farmer Data Registry</h2><div class="card wrap"><table><tr><th>Dataset</th><th>Level</th><th>Sensitivity</th><th>Collected</th><th>Contributors</th><th></th></tr>${DS.map(x=>`<tr><td>${x[1]}</td><td>${x[2].startsWith('Ind')?chip('Individual')+' never released':chip('Aggregate')}</td><td>${x[3]}</td><td>${x[4]}</td><td>${x[0]=='ds4'?'FPO market committee':'120 members, 6 villages'}</td><td><button class="b o" data-a="sel" data-v="${x[0]}">Passport</button></td></tr>`).join('')}</table></div>
-<div class="card"><h3>Data passport: ${d[1]}</h3><div class="grid"><div><span class="mut">Contributing group</span><br>${d[0]=='ds4'?'FPO market committee':'FPO members (synthetic)'}</div><div><span class="mut">Collection period</span><br>${d[4]}</div><div><span class="mut">Sensitivity</span><br>${d[3]}</div><div><span class="mut">Approved external purposes</span><br>${rel?a.purposes.join(', '):'None. Not offered externally.'}</div><div><span class="mut">Policy version</span><br>v${a.v}</div></div>
-<h3 style="margin-top:1rem">Access history</h3>${hist.length?hist.slice(-6).map(e=>`<div class="mut">${fmt(e.ts)} · ${esc(e.actor)} · ${esc(e.action)} · ${esc(e.decision)}</div>`).join(''):'<p class="mut">No access recorded yet.</p>'}</div>
-${S.role=='admin'?`<div class="card"><h3>FPO-internal view (never shown to requesters)</h3><div class="wrap"><table><tr><th>ID</th><th>Village</th><th>Crop</th><th>Yield (q/acre)</th><th>Irrigation</th></tr>${F.slice(0,5).map(f=>`<tr><td>#${f.id}</td><td>${f.village}</td><td>${f.crop}</td><td>${f.yield}</td><td>${f.irr}</td></tr>`).join('')}</table></div><p class="mut">Showing 5 of ${N} synthetic records.</p></div>`:''}`}
-function pcard(p){const t=tally(p.v),cast=t.for+t.against+t.abstain,q=Math.ceil(p.quorum*N),ap=t.for+t.against?t.for/(t.for+t.against):0,my=S.votes[p.v][S.farmer];
-return`<div class="card"><div class="row"><h3 style="margin:0">v${p.v}: ${esc(p.title)}</h3>${chip(p.status)}</div><p class="mut">Purposes: ${p.purposes.join(', ')} · min group size ${p.k} · max ${p.maxDays} days · resale always prohibited</p>
-<div class="grid"><div>Eligible members<br><b>${N}</b></div><div>Votes cast<br><b>${cast}</b> (quorum ${q})</div><div>For / Against / Abstain<br><b>${t.for} / ${t.against} / ${t.abstain}</b></div><div>Approval of votes for or against<br><b>${Math.round(ap*100)}%</b> (needs ${Math.round(p.thr*100)}%)</div></div><div style="margin-top:.6rem">${bar(ap,1,p.thr)}</div>
-${p.status=='proposed'?(S.role=='farmer'?(my?`<p class="ok">You voted. Voting again is blocked.</p><button class="b o" data-a="dup" data-p="${p.v}">Try voting again</button>`:`<div class="row" style="margin-top:.6rem"><button class="b" data-a="vote" data-p="${p.v}" data-c="for">Vote for</button><button class="b o" data-a="vote" data-p="${p.v}" data-c="against">Vote against</button><button class="b o" data-a="vote" data-p="${p.v}" data-c="abstain">Abstain</button><span class="mut">As Farmer #${S.farmer}</span></div>`):S.role=='admin'?`<div class="row" style="margin-top:.6rem"><button class="b" data-a="simvotes" data-p="${p.v}">Simulate 12 member votes</button><button class="b o" data-a="close" data-p="${p.v}">Close voting</button></div>`:''):''}</div>`}
-function vGov(){const sim=document.getElementById('sim');return`<h2>Governance and Voting</h2>${S.policies.slice().reverse().map(pcard).join('')}
-${S.role=='admin'?`<div class="card"><h3>Propose a data-sharing policy</h3><div class="f"><label>Title<input id="pt" value="Allow commercial advisory use"></label><label>Minimum group size<input id="pk" type="number" value="10" min="3"></label><label>Maximum days<input id="pd" type="number" value="45"></label><label>Approval threshold %<input id="ph" type="number" value="66" min="50" max="100"></label></div><div class="row" style="margin:.6rem 0">${PUR.slice(0,3).map((x,i)=>`<label><input type="checkbox" id="pp${i}" ${i==0?'checked':''}> ${x}</label>`).join('')}<span class="mut">Data resale cannot be enabled.</span></div><button class="b" data-a="propose">Publish for voting</button></div>`:''}
-<div class="card"><h3>Governance timeline</h3><div class="tl">${S.audit.filter(e=>/policy|votes closed|request submitted|request approved|data released|expired|revoked/.test(e.action)).map(e=>`<div><b>${fmt(e.ts)}</b> ${esc(e.action)} <span class="mut">(${esc(e.actor)}, policy v${e.pv}${e.detail?', '+esc(e.detail):''})</span></div>`).join('')}</div></div>`}
-function resT(r){const x=S.results[r.id];if(!x)return'';if(x.err)return`<div class="note"><b>Denied.</b> ${esc(x.err)}</div>`;const mx=Math.max(...x.rows.map(y=>y.v||0),1);return`<div class="wrap"><table><tr><th>Group</th><th>Result</th><th>Members</th></tr>${x.rows.map(y=>`<tr><td>${y.l}</td><td>${y.sup?`<i class="mut">Suppressed (group below ${x.k})</i>`:y.t?esc(y.t):y.v+' '+y.u+bar(y.v,mx)}</td><td>${y.sup?'-':y.n}</td></tr>`).join('')}</table></div><p class="mut">Policy v${x.v}, ${fmt(x.ts)}. Aggregation and suppression reduce disclosure risk. They do not guarantee anonymity.</p>`}
-function vReq(){status();const mine=S.role=='requester',L=mine?S.requests.filter(r=>r.org==S.org):S.requests;
-const form=mine?`<div class="card"><h3>New access request</h3><div class="f"><label>Purpose<select id="rp">${PUR.map(x=>`<option>${x}</option>`).join('')}</select></label><label>Requested output<select id="ro">${Object.entries(OUT).map(([k,v])=>`<option value="${k}">${v[0]}</option>`).join('')}</select></label><label>Duration (days)<input id="rd" type="number" value="30"></label><label>Contact email<input id="rc" type="email" value="contact@demo-org.example"></label></div><p class="mut">Organization: ${esc(S.org)}. Group-level outputs only.</p><button class="b" data-a="submit">Submit request</button></div>`:'';
-return`<h2>Access Requests</h2>${form}${S.role=='admin'?`<div class="row" style="margin-bottom:1rem"><span class="mut">Demo clock: ${fmt(S.now)}</span><button class="b o" data-a="time">Advance 30 days</button></div>`:''}${L.length?L.slice().reverse().map(r=>`<div class="card"><div class="row"><h3 style="margin:0">${r.id} · ${esc(r.org)}</h3>${chip(r.status)}</div><p class="mut">${r.purpose} · ${OUT[r.out][0]} · ${r.days} days · submitted ${fmt(r.at)}${r.exp?' · valid to '+fmt(r.exp)+' (policy v'+r.apv+')':''}${S.role=='admin'?' · '+esc(r.contact):''}</p>${r.reason?`<p><b>Decision reason:</b> ${esc(r.reason)}</p>`:''}
-<div class="row">${S.role=='admin'&&r.status=='Pending'?`<button class="b" data-a="approve" data-id="${r.id}">Check policy and approve</button><button class="b o" data-a="reject" data-id="${r.id}">Reject</button>`:''}${S.role=='admin'&&r.status=='Approved'?`<button class="b d" data-a="revoke" data-id="${r.id}">Revoke</button>`:''}${mine?`<button class="b" data-a="run" data-id="${r.id}">Get group-level output</button><button class="b o" data-a="raw" data-id="${r.id}">Ask for raw records</button>`:''}</div>${mine?resT(r):''}</div>`).join(''):'<div class="card">No requests yet. Submit one above.</div>'}`}
-function simOut(){const g=i=>document.getElementById(i),k=+g('sk2').value,d=+g('sd2').value,pu=PUR.slice(0,3).filter((x,i)=>g('sp'+i).checked);let tot=0,sup=0;Object.keys(OUT).forEach(o=>agg(o,k).forEach(r=>{tot++;if(r.sup)sup++}));
-g('simout').innerHTML=`<b>Allowed purposes:</b> ${pu.join(', ')||'none'}<br><b>Eligible demo requesters:</b> ${ORGS.filter((o,i)=>pu.includes(["Academic research","Government planning","Commercial product"][i])).map(esc).join(', ')||'none'}<br><b>Expiry:</b> up to ${d} days, then access stops<br><b>Visibility:</b> ${sup} of ${tot} statistic rows suppressed at minimum group size ${k}<br><b>Always blocked:</b> raw records and resale`}
-function vPriv(){const a=act_(),cells={};F.forEach(f=>{const k=f.village+' / '+f.crop;(cells[k]=cells[k]||[]).push(f)});const small=Object.entries(cells).filter(([k,v])=>v.length<=2).slice(0,5);
-return`<h2>Privacy Analytics</h2><div class="card"><h3>What requesters can see now (min group size ${a.k})</h3>${Object.keys(OUT).map(o=>`<h3 style="margin-top:.8rem;font-size:.95rem">${OUT[o][0]}</h3><div class="wrap"><table>${agg(o,a.k).map(y=>`<tr><td>${y.l}</td><td>${y.sup?`<i class="mut">Suppressed</i>`:y.t?esc(y.t):y.v+' '+y.u}</td></tr>`).join('')}</table></div>`).join('')}</div>
-<div class="card" id="sim"><h3>What-if policy simulator</h3><div class="f"><label>Minimum group size <input id="sk2" type="range" min="3" max="30" value="${a.k}"></label><label>Maximum duration (days)<input id="sd2" type="number" value="${a.maxDays}"></label></div><div class="row" style="margin:.5rem 0">${PUR.slice(0,3).map((x,i)=>`<label><input type="checkbox" id="sp${i}" ${a.purposes.includes(x)?'checked':''}> ${x}</label>`).join('')}</div><div class="note" id="simout"></div></div>
-<div class="card"><h3>Privacy leak demonstration</h3><p>A very narrow query can describe one person. Below, synthetic village and crop combinations with only one or two farmers.</p><button class="b o" data-a="leak">${S.leak?'Turn protections off':'Turn protections on'}</button><div class="wrap"><table><tr><th>Query</th><th>Answer</th></tr>${small.map(([k,v])=>`<tr><td>Average yield, ${k}</td><td>${S.leak?`<span class="ok">Suppressed: group smaller than ${a.k}</span>`:`<span class="bad">${(v.reduce((s,x)=>s+x.yield,0)/v.length).toFixed(1)} q/acre from ${v.length} farmer(s). That is ${v.length==1?'one person\'s yield (synthetic farmer #'+v[0].id+')':'almost one person\'s yield'}.</span>`}</td></tr>`).join('')}</table></div>
-<p class="mut">Protections: minimum group size, one grouping dimension per output, no free filters, a budget of 3 releases per approval so differences between repeated queries cannot isolate a farmer. These reduce risk but do not guarantee anonymity.</p></div>`}
-function vAudit(){const vr=S.vr;return`<h2>Audit Trail</h2><div class="card"><div class="row"><button class="b" data-a="verify">Verify hash chain</button><button class="b o" data-a="tamper" ${S.tamper?'disabled':''}>Tamper with entry 4 (demo)</button><button class="b o" data-a="undo" ${S.tamper?'':'disabled'}>Undo tamper</button>${vr==null?'':vr<0?'<span class="ok">Chain intact. No modification found.</span>':`<span class="bad">Chain broken at entry ${vr}. Entry was modified.</span>`}</div><p class="mut">Each entry stores the hash of the previous entry, so editing one changes every later hash. This local log is tamper-evident only. It is not a production-grade immutable ledger.</p></div><div class="card wrap"><table><tr><th>#</th><th>Time</th><th>Actor</th><th>Action</th><th>Dataset</th><th>Purpose</th><th>Decision</th><th>Policy</th><th>Hash</th></tr>${S.audit.slice().reverse().map(e=>`<tr><td>${e.i}</td><td>${fmt(e.ts)}</td><td>${esc(e.actor)}</td><td>${esc(e.action)}<div class="mut">${esc(e.detail)}</div></td><td>${e.ds}</td><td>${esc(e.purpose)}</td><td>${esc(e.decision)}</td><td>v${e.pv}</td><td class="hash">${e.hash.slice(0,8)}</td></tr>`).join('')}</table></div>`}
-function vBen(){const bal=S.ledger.reduce((s,x)=>s+x.a,0),used=S.requests.filter(r=>r.rel>0);return`<h2>Benefits and Transparency</h2><div class="card"><h3>What was used and shared</h3>${used.length?`<table>${used.map(r=>`<tr><td>${r.id} ${esc(r.org)}</td><td>${DS.find(d=>d[0]==r.ds)[1]}</td><td>${r.purpose}</td><td>${OUT[r.out][0]} (${r.rel} release${r.rel>1?'s':''})</td></tr>`).join('')}</table>`:'<p class="mut">No group-level outputs released yet. Approve a request and run it as a requester.</p>'}</div>
-<div class="card"><h3>Community benefit ledger <span class="chip Pending">Simulated</span></h3><p class="mut">All amounts are hypothetical and not connected to any payment system.</p><table>${S.ledger.map(x=>`<tr><td>${fmt(x.ts)}</td><td>${esc(x.d)}</td><td>${x.a<0?'-':''}₹${Math.abs(x.a).toLocaleString('en-IN')}</td></tr>`).join('')}<tr><th colspan="2">Simulated balance</th><th>₹${bal.toLocaleString('en-IN')}</th></tr></table></div>
-<div class="card"><h3>How collective decisions shape governance</h3><p>Policy v${act_().v} was approved by member vote. It allows ${act_().purposes.join(' and ').toLowerCase()}, requires groups of at least ${act_().k}, and prohibits resale. Changing any of these needs a new vote.</p></div>`}
-function vSet(){const a=act_();return`<h2>Settings</h2><div class="card"><h3>Minimum group size (policy v${a.v})</h3><div class="row"><input id="sk" type="number" min="3" max="50" value="${a.k}"><button class="b" data-a="setk">Save and log change</button></div><p class="mut">In a real deployment this would require a new member vote. Here the change is logged.</p></div><div class="card"><h3>Demo data</h3><p class="mut">Data is deterministic synthetic data stored in your browser only.</p><button class="b d" data-a="reset">Reset demo</button></div>`}
-const V={"Overview":vOverview,"Farmer Data Registry":vRegistry,"Governance and Voting":vGov,"Access Requests":vReq,"Privacy Analytics":vPriv,"Audit Trail":vAudit,"Benefits and Transparency":vBen,"Settings":vSet};
-function render(){if(!NAV[S.role].includes(S.view))S.view='Overview';document.getElementById('nav').innerHTML='<b>Khet Data Trust</b>'+NAV[S.role].map(n=>`<button data-a="nav" data-v="${n}" ${n==S.view?'aria-current="page"':''}>${n}</button>`).join('');
-document.getElementById('app').innerHTML=`<div class="top"><div class="mut">Farmers Control Their Shared Data</div><div class="row"><label class="mut">Viewing as <select id="rs" aria-label="Role">${[['farmer','Farmer #7'],['admin','FPO Administrator'],['requester','Data Requester']].map(r=>`<option value="${r[0]}" ${S.role==r[0]?'selected':''}>${r[1]}</option>`).join('')}</select></label>${S.role=='requester'?`<select id="os" aria-label="Organization">${ORGS.map(o=>`<option ${o==S.org?'selected':''}>${esc(o)}</option>`).join('')}</select>`:''}</div></div>`+V[S.view]();
-document.getElementById('rs').onchange=e=>act('role',{v:e.target.value});const os=document.getElementById('os');if(os)os.onchange=e=>{S.org=e.target.value;save();render()};if(document.getElementById('sim')){simOut()}}
-document.addEventListener('click',e=>{const b=e.target.closest('[data-a]');if(b&&!b.disabled)act(b.dataset.a,b.dataset)});
-document.addEventListener('input',e=>{if(e.target.closest('#sim'))simOut()});
-load();status();render();
-
-
-/* ===== KHET DATA TRUST ROLE LOGIN ===== */
-
-document.getElementById("loginForm").addEventListener("submit", function (event) {
-  event.preventDefault();
-
-  const name = document.getElementById("loginName").value.trim();
-  const selectedRole = document.querySelector(
-    'input[name="userRole"]:checked'
-  );
-
-  if (!name || !selectedRole) {
-    alert("Please enter your name and select your role.");
-    return;
-  }
-
-  // Store the current demo session for this page.
-  window.kdtCurrentUser = {
-    name: name,
-    role: selectedRole.value
-  };
-
-  // Reveal the existing dashboard without rebuilding it.
-  document.body.classList.add("kdt-authenticated");
-
-  // Update the browser tab title.
-  document.title = "Khet Data Trust | " + selectedRole.value;
-
-  // Optional: make the logged-in identity available to your dashboard.
-  document.dispatchEvent(
-    new CustomEvent("kdt:login", {
-      detail: window.kdtCurrentUser
-    })
-  );
-});
-
-</script></body></html>
+<div class="grid"><div class="card"><h3>Governance health: ${tr.s}/100</h3><p class="mut">Explainable heuristic from four factors. It is not a scientifically validated trust score.</p>${tr.f.map(x => `<div class="mut">${x[0]}: ${x[1]}</div>${bar(x[1], 100)}`).join('<br>')}</div>
+<div class="card"><h3>Recent activity</h3>${S.audit.slice(-6).reverse().map(e => `<div class="mut">${fmt(e.ts)} · ${esc(e.actor)} · <b>${esc(e.action)}</b></div>`).join('')}</div></div>`
+            }
+            function vRegistry() {
+                const a = act_()
+                  , d = DS.find(x => x[0] == S.sel)
+                  , hist = S.audit.filter(e => e.ds == d[0])
+                  , rel = d[0] == 'ds1' || d[0] == 'ds3';
+                return `<h2>Farmer Data Registry</h2><div class="card wrap"><table><tr><th>Dataset</th><th>Level</th><th>Sensitivity</th><th>Collected</th><th>Contributors</th><th></th></tr>${DS.map(x => `<tr><td>${x[1]}</td><td>${x[2].startsWith('Ind') ? chip('Individual') + ' never released' : chip('Aggregate')}</td><td>${x[3]}</td><td>${x[4]}</td><td>${x[0] == 'ds4' ? 'FPO market committee' : '120 members, 6 villages'}</td><td><button class="b o" data-a="sel" data-v="${x[0]}">Passport</button></td></tr>`).join('')}</table></div>
+<div class="card"><h3>Data passport: ${d[1]}</h3><div class="grid"><div><span class="mut">Contributing group</span><br>${d[0] == 'ds4' ? 'FPO market committee' : 'FPO members (synthetic)'}</div><div><span class="mut">Collection period</span><br>${d[4]}</div><div><span class="mut">Sensitivity</span><br>${d[3]}</div><div><span class="mut">Approved external purposes</span><br>${rel ? a.purposes.join(', ') : 'None. Not offered externally.'}</div><div><span class="mut">Policy version</span><br>v${a.v}</div></div>
+<h3 style="margin-top:1rem">Access history</h3>${hist.length ? hist.slice(-6).map(e => `<div class="mut">${fmt(e.ts)} · ${esc(e.actor)} · ${esc(e.action)} · ${esc(e.decision)}</div>`).join('') : '<p class="mut">No access recorded yet.</p>'}</div>
+${S.role == 'admin' ? `<div class="card"><h3>FPO-internal view (never shown to requesters)</h3><div class="wrap"><table><tr><th>ID</th><th>Village</th><th>Crop</th><th>Yield (q/acre)</th><th>Irrigation</th></tr>${F.slice(0, 5).map(f => `<tr><td>#${f.id}</td><td>${f.village}</td><td>${f.crop}</td><td>${f.yield}</td><td>${f.irr}</td></tr>`).join('')}</table></div><p class="mut">Showing 5 of ${N} synthetic records.</p></div>` : ''}`
+            }
+            function pcard(p) {
+                const t = tally(p.v)
+                  , cast = t.for + t.against + t.abstain
+                  , q = Math.ceil(p.quorum * N)
+                  , ap = t.for + t.against ? t.for / (t.for + t.against) : 0
+                  , my = S.votes[p.v][S.farmer];
+                return `<div class="card"><div class="row"><h3 style="margin:0">v${p.v}: ${esc(p.title)}</h3>${chip(p.status)}</div><p class="mut">Purposes: ${p.purposes.join(', ')} · min group size ${p.k} · max ${p.maxDays} days · resale always prohibited</p>
+<div class="grid"><div>Eligible members<br><b>${N}</b></div><div>Votes cast<br><b>${cast}</b> (quorum ${q})</div><div>For / Against / Abstain<br><b>${t.for} / ${t.against} / ${t.abstain}</b></div><div>Approval of votes for or against<br><b>${Math.round(ap * 100)}%</b> (needs ${Math.round(p.thr * 100)}%)</div></div><div style="margin-top:.6rem">${bar(ap, 1, p.thr)}</div>
+${p.status == 'proposed' ? (S.role == 'farmer' ? (my ? `<p class="ok">You voted. Voting again is blocked.</p><button class="b o" data-a="dup" data-p="${p.v}">Try voting again</button>` : `<div class="row" style="margin-top:.6rem"><button class="b" data-a="vote" data-p="${p.v}" data-c="for">Vote for</button><button class="b o" data-a="vote" data-p="${p.v}" data-c="against">Vote against</button><button class="b o" data-a="vote" data-p="${p.v}" data-c="abstain">Abstain</button><span class="mut">As Farmer #${S.farmer}</span></div>`) : S.role == 'admin' ? `<div class="row" style="margin-top:.6rem"><button class="b" data-a="simvotes" data-p="${p.v}">Simulate 12 member votes</button><button class="b o" data-a="close" data-p="${p.v}">Close voting</button></div>` : '') : ''}</div>`
+            }
+            function vGov() {
+                const sim = document.getElementById('sim');
+                return `<h2>Governance and Voting</h2>${S.policies.slice().reverse().map(pcard).join('')}
+${S.role == 'admin' ? `<div class="card"><h3>Propose a data-sharing policy</h3><div class="f"><label>Title<input id="pt" value="Allow commercial advisory use"></label><label>Minimum group size<input id="pk" type="number" value="10" min="3"></label><label>Maximum days<input id="pd" type="number" value="45"></label><label>Approval threshold %<input id="ph" type="number" value="66" min="50" max="100"></label></div><div class="row" style="margin:.6rem 0">${PUR.slice(0, 3).map( (x, i) => `<label><input type="checkbox" id="pp${i}" ${i == 0 ? 'checked' : ''}> ${x}</label>`).join('')}<span class="mut">Data resale cannot be enabled.</span></div><button class="b" data-a="propose">Publish for voting</button></div>` : ''}
+<div class="card"><h3>Governance timeline</h3><div class="tl">${S.audit.filter(e => /policy|votes closed|request submitted|request approved|data released|expired|revoked/.test(e.action)).map(e => `<div><b>${fmt(e.ts)}</b> ${esc(e.action)} <span class="mut">(${esc(e.actor)}, policy v${e.pv}${e.detail ? ', ' + esc(e.detail) : ''})</span></div>`).join('')}</div></div>`
+            }
+            function resT(r) {
+                const x = S.results[r.id];
+                if (!x)
+                    return '';
+                if (x.err)
+                    return `<div class="note"><b>Denied.</b> ${esc(x.err)}</div>`;
+                const mx = Math.max(...x.rows.map(y => y.v || 0), 1);
+                return `<div class="wrap"><table><tr><th>Group</th><th>Result</th><th>Members</th></tr>${x.rows.map(y => `<tr><td>${y.l}</td><td>${y.sup ? `<i class="mut">Suppressed (group below ${x.k})</i>` : y.t ? esc(y.t) : y.v + ' ' + y.u + bar(y.v, mx)}</td><td>${y.sup ? '-' : y.n}</td></tr>`).join('')}</table></div><p class="mut">Policy v${x.v}, ${fmt(x.ts)}. Aggregation and suppression reduce disclosure risk. They do not guarantee anonymity.</p>`
+            }
+            function vReq() {
+                status();
+                const mine = S.role == 'requester'
+                  , L = mine ? S.requests.filter(r => r.org == S.org) : S.requests;
+                const form = mine ? `<div class="card"><h3>New access request</h3><div class="f"><label>Purpose<select id="rp">${PUR.map(x => `<option>${x}</option>`).join('')}</select></label><label>Requested output<select id="ro">${Object.entries(OUT).map( ([k,v]) => `<option value="${k}">${v[0]}</option>`).join('')}</select></label><label>Duration (days)<input id="rd" type="number" value="30"></label><label>Contact email<input id="rc" type="email" value="contact@demo-org.example"></label></div><p class="mut">Organization: ${esc(S.org)}. Group-level outputs only.</p><button class="b" data-a="submit">Submit request</button></div>` : '';
+                return `<h2>Access Requests</h2>${form}${S.role == 'admin' ? `<div class="row" style="margin-bottom:1rem"><span class="mut">Demo clock: ${fmt(S.now)}</span><button class="b o" data-a="time">Advance 30 days</button></div>` : ''}${L.length ? L.slice().reverse().map(r => `<div class="card"><div class="row"><h3 style="margin:0">${r.id} · ${esc(r.org)}</h3>${chip(r.status)}</div><p class="mut">${r.purpose} · ${OUT[r.out][0]} · ${r.days} days · submitted ${fmt(r.at)}${r.exp ? ' · valid to ' + fmt(r.exp) + ' (policy v' + r.apv + ')' : ''}${S.role == 'admin' ? ' · ' + esc(r.contact) : ''}</p>${r.reason ? `<p><b>Decision reason:</b> ${esc(r.reason)}</p>` : ''}
+<div class="row">${S.role == 'admin' && r.status == 'Pending' ? `<button class="b" data-a="approve" data-id="${r.id}">Check policy and approve</button><button class="b o" data-a="reject" data-id="${r.id}">Reject</button>` : ''}${S.role == 'admin' && r.status == 'Approved' ? `<button class="b d" data-a="revoke" data-id="${r.id}">Revoke</button>` : ''}${mine ? `<button class="b" data-a="run" data-id="${r.id}">Get group-level output</button><button class="b o" data-a="raw" data-id="${r.id}">Ask for raw records</button>` : ''}</div>${mine ? resT(r) : ''}</div>`).join('') : '<div class="card">No requests yet. Submit one above.</div>'}`
+            }
+            function simOut() {
+                const g = i => document.getElementById(i)
+                  , k = +g('sk2').value
+                  , d = +g('sd2').value
+                  , pu = PUR.slice(0, 3).filter( (x, i) => g('sp' + i).checked);
+                let tot = 0
+                  , sup = 0;
+                Object.keys(OUT).forEach(o => agg(o, k).forEach(r => {
+                    tot++;
+                    if (r.sup)
+                        sup++
+                }
+                ));
+                g('simout').innerHTML = `<b>Allowed purposes:</b> ${pu.join(', ') || 'none'}<br><b>Eligible demo requesters:</b> ${ORGS.filter( (o, i) => pu.includes(["Academic research", "Government planning", "Commercial product"][i])).map(esc).join(', ') || 'none'}<br><b>Expiry:</b> up to ${d} days, then access stops<br><b>Visibility:</b> ${sup} of ${tot} statistic rows suppressed at minimum group size ${k}<br><b>Always blocked:</b> raw records and resale`
+            }
+            function vPriv() {
+                const a = act_()
+                  , cells = {};
+                F.forEach(f => {
+                    const k = f.village + ' / ' + f.crop;
+                    (cells[k] = cells[k] || []).push(f)
+                }
+                );
+                const small = Object.entries(cells).filter( ([k,v]) => v.length <= 2).slice(0, 5);
+                return `<h2>Privacy Analytics</h2><div class="card"><h3>What requesters can see now (min group size ${a.k})</h3>${Object.keys(OUT).map(o => `<h3 style="margin-top:.8rem;font-size:.95rem">${OUT[o][0]}</h3><div class="wrap"><table>${agg(o, a.k).map(y => `<tr><td>${y.l}</td><td>${y.sup ? `<i class="mut">Suppressed</i>` : y.t ? esc(y.t) : y.v + ' ' + y.u}</td></tr>`).join('')}</table></div>`).join('')}</div>
+<div class="card" id="sim"><h3>What-if policy simulator</h3><div class="f"><label>Minimum group size <input id="sk2" type="range" min="3" max="30" value="${a.k}"></label><label>Maximum duration (days)<input id="sd2" type="number" value="${a.maxDays}"></label></div><div class="row" style="margin:.5rem 0">${PUR.slice(0, 3).map( (x, i) => `<label><input type="checkbox" id="sp${i}" ${a.purposes.includes(x) ? 'checked' : ''}> ${x}</label>`).join('')}</div><div class="note" id="simout"></div></div>
+<div class="card"><h3>Privacy leak demonstration</h3><p>A very narrow query can describe one person. Below, synthetic village and crop combinations with only one or two farmers.</p><button class="b o" data-a="leak">${S.leak ? 'Turn protections off' : 'Turn protections on'}</button><div class="wrap"><table><tr><th>Query</th><th>Answer</th></tr>${small.map( ([k,v]) => `<tr><td>Average yield, ${k}</td><td>${S.leak ? `<span class="ok">Suppressed: group smaller than ${a.k}</span>` : `<span class="bad">${(v.reduce( (s, x) => s + x.yield, 0) / v.length).toFixed(1)} q/acre from ${v.length} farmer(s). That is ${v.length == 1 ? 'one person\'s yield (synthetic farmer #' + v[0].id + ')' : 'almost one person\'s yield'}.</span>`}</td></tr>`).join('')}</table></div>
+<p class="mut">Protections: minimum group size, one grouping dimension per output, no free filters, a budget of 3 releases per approval so differences between repeated queries cannot isolate a farmer. These reduce risk but do not guarantee anonymity.</p></div>`
+            }
+            function vAudit() {
+                const vr = S.vr;
+                return `<h2>Audit Trail</h2><div class="card"><div class="row"><button class="b" data-a="verify">Verify hash chain</button><button class="b o" data-a="tamper" ${S.tamper ? 'disabled' : ''}>Tamper with entry 4 (demo)</button><button class="b o" data-a="undo" ${S.tamper ? '' : 'disabled'}>Undo tamper</button>${vr == null ? '' : vr < 0 ? '<span class="ok">Chain intact. No modification found.</span>' : `<span class="bad">Chain broken at entry ${vr}. Entry was modified.</span>`}</div><p class="mut">Each entry stores the hash of the previous entry, so editing one changes every later hash. This local log is tamper-evident only. It is not a production-grade immutable ledger.</p></div><div class="card wrap"><table><tr><th>#</th><th>Time</th><th>Actor</th><th>Action</th><th>Dataset</th><th>Purpose</th><th>Decision</th><th>Policy</th><th>Hash</th></tr>${S.audit.slice().reverse().map(e => `<tr><td>${e.i}</td><td>${fmt(e.ts)}</td><td>${esc(e.actor)}</td><td>${esc(e.action)}<div class="mut">${esc(e.detail)}</div></td><td>${e.ds}</td><td>${esc(e.purpose)}</td><td>${esc(e.decision)}</td><td>v${e.pv}</td><td class="hash">${e.hash.slice(0, 8)}</td></tr>`).join('')}</table></div>`
+            }
+            function vBen() {
+                const bal = S.ledger.reduce( (s, x) => s + x.a, 0)
+                  , used = S.requests.filter(r => r.rel > 0);
+                return `<h2>Benefits and Transparency</h2><div class="card"><h3>What was used and shared</h3>${used.length ? `<table>${used.map(r => `<tr><td>${r.id} ${esc(r.org)}</td><td>${DS.find(d => d[0] == r.ds)[1]}</td><td>${r.purpose}</td><td>${OUT[r.out][0]} (${r.rel} release${r.rel > 1 ? 's' : ''})</td></tr>`).join('')}</table>` : '<p class="mut">No group-level outputs released yet. Approve a request and run it as a requester.</p>'}</div>
+<div class="card"><h3>Community benefit ledger <span class="chip Pending">Simulated</span></h3><p class="mut">All amounts are hypothetical and not connected to any payment system.</p><table>${S.ledger.map(x => `<tr><td>${fmt(x.ts)}</td><td>${esc(x.d)}</td><td>${x.a < 0 ? '-' : ''}₹${Math.abs(x.a).toLocaleString('en-IN')}</td></tr>`).join('')}<tr><th colspan="2">Simulated balance</th><th>₹${bal.toLocaleString('en-IN')}</th></tr></table></div>
+<div class="card"><h3>How collective decisions shape governance</h3><p>Policy v${act_().v} was approved by member vote. It allows ${act_().purposes.join(' and ').toLowerCase()}, requires groups of at least ${act_().k}, and prohibits resale. Changing any of these needs a new vote.</p></div>`
+            }
+            function vSet() {
+                const a = act_();
+                return `<h2>Settings</h2><div class="card"><h3>Minimum group size (policy v${a.v})</h3><div class="row"><input id="sk" type="number" min="3" max="50" value="${a.k}"><button class="b" data-a="setk">Save and log change</button></div><p class="mut">In a real deployment this would require a new member vote. Here the change is logged.</p></div><div class="card"><h3>Demo data</h3><p class="mut">Data is deterministic synthetic data stored in your browser only.</p><button class="b d" data-a="reset">Reset demo</button></div>`
+            }
+            const V = {
+                "Overview": vOverview,
+                "Farmer Data Registry": vRegistry,
+                "Governance and Voting": vGov,
+                "Access Requests": vReq,
+                "Privacy Analytics": vPriv,
+                "Audit Trail": vAudit,
+                "Benefits and Transparency": vBen,
+                "Settings": vSet
+            };
+            function render() {
+                const loginRoot = document.getElementById('login-root')
+                  , shell = document.getElementById('dashboard-shell');
+                let auth = null;
+                try {
+                    auth = JSON.parse(sessionStorage.getItem('khet-demo-session') || 'null')
+                } catch (e) {}
+                if (!auth || !auth.name || !auth.role) {
+                    shell.hidden = true;
+                    loginRoot.hidden = false;
+                    loginRoot.innerHTML = `<section class="login-card"><div class="brand">Khet Data Trust</div><h1>Sign in</h1><p class="mut">Farmers control their shared data</p>
+ <div class="note">Demo login only. This prototype has no backend authentication. Any non-empty password will work; do not use a real password.</div>
+ <form id="login-form"><label>Name<input name="name" autocomplete="name" required maxlength="80" placeholder="Enter your name"></label>
+ <label>Password<input name="password" type="password" autocomplete="current-password" required placeholder="Enter any demo password"></label>
+ <label>Sign In As<select name="role" required><option value="farmer">Farmer</option><option value="admin">FPO Administrator</option><option value="requester">Data Requestor</option></select></label>
+ <p id="login-error" role="alert" hidden></p><button class="b" type="submit">Sign in</button></form>
+ <p class="login-note">Synthetic data only · Demo credentials are not verified or stored.</p></section>`;
+                    document.getElementById('login-form').addEventListener('submit', e => {
+                        e.preventDefault();
+                        const fd = new FormData(e.currentTarget)
+                          , name = String(fd.get('name') || '').trim()
+                          , password = String(fd.get('password') || '')
+                          , role = String(fd.get('role') || 'farmer');
+                        if (!name || !password) {
+                            const er = document.getElementById('login-error');
+                            er.textContent = 'Enter a name and demo password.';
+                            er.hidden = false;
+                            return
+                        }
+                        sessionStorage.setItem('khet-demo-session', JSON.stringify({
+                            name,
+                            role
+                        }));
+                        S.role = role;
+                        S.view = 'Overview';
+                        save();
+                        render()
+                    }
+                    );
+                    return;
+                }
+                S.role = auth.role;
+                shell.hidden = false;
+                loginRoot.hidden = true;
+                if (!NAV[S.role].includes(S.view))
+                    S.view = 'Overview';
+                document.getElementById('nav').innerHTML = '<b>Khet Data Trust</b>' + NAV[S.role].map(n => `<button data-a="nav" data-v="${n}" ${n == S.view ? 'aria-current="page"' : ''}>${n}</button>`).join('');
+                document.getElementById('app').innerHTML = `<div class="top"><div><div class="mut">Farmers Control Their Shared Data</div><div class="mut">Signed in as ${esc(auth.name)} · ${S.role == 'admin' ? 'FPO Administrator' : S.role == 'requester' ? 'Data Requestor' : 'Farmer'}</div></div><div class="row">${S.role == 'requester' ? `<select id="os" aria-label="Organization">${ORGS.map(o => `<option ${o == S.org ? 'selected' : ''}>${esc(o)}</option>`).join('')}</select>` : ''}<button type="button" class="b logout-btn" data-a="logout" aria-label="Log out of Khet Data Trust"><span aria-hidden="true">↪</span><span>Log out</span></button></div></div>` + V[S.view]();
+                const os = document.getElementById('os');
+                if (os)
+                    os.onchange = e => {
+                        S.org = e.target.value;
+                        save();
+                        render()
+                    }
+                    ;
+                if (document.getElementById('sim'))
+                    simOut()
+            }
+            document.addEventListener('click', e => {
+                const b = e.target.closest('[data-a]');
+                if (b && !b.disabled)
+                    act(b.dataset.a, b.dataset)
+            }
+            );
+            document.addEventListener('input', e => {
+                if (e.target.closest('#sim'))
+                    simOut()
+            }
+            );
+            load();
+            status();
+            render();
+        </script>
+    </body>
+</html>
